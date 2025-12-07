@@ -1,0 +1,8 @@
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.GeneratedMSBuildEditorConfig.editorconfig
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.AssemblyInfoInputs.cache
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.AssemblyInfo.cs
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.csproj.CoreCompileInputs.cache
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.MvcApplicationPartsAssemblyInfo.cache
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.RazorAssemblyInfo.cache
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.RazorAssemblyInfo.cs
+/home/user/FurnitureApplication/Furniture.ClientPortal/obj/Debug/net9.0/Furniture.Clientportal.sourcelink.json
