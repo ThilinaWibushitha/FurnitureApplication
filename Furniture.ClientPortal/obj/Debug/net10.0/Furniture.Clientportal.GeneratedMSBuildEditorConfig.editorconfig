@@ -26,6 +26,26 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/AllFurniture.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWxsRnVybml0dXJlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Auth/AdminLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxBZG1pbkxvZ2luLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Auth/MainAdminLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxNYWluQWRtaW5Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Cart.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Checkout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hlY2tvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Client/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50XERhc2hib2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -56,6 +76,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Items/ItemList.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcSXRlbUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Orders.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/TrendingFurniture.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJlbmRpbmdGdXJuaXR1cmUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Shared/MainLayout.razor]

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8acdeb93f57467a3a4250e0e6329178bb29e9f01")]
 [assembly: System.Reflection.AssemblyProductAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

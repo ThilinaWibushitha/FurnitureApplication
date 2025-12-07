@@ -22,7 +22,6 @@ C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debu
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\Pages\Login.razor.rz.scp.css
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\bundle\Furniture.Clientportal.styles.css
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\projectbundle\Furniture.Clientportal.bundle.scp.css
-C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\ceakigtqku-{0}-ogxlwqhcdv-ogxlwqhcdv.gz
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\huxkdmr7la-{0}-j8lzlu28q6-j8lzlu28q6.gz
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\wnltj7a010-{0}-u1n4jc5v46-u1n4jc5v46.gz
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\51lmz9xor5-{0}-q2d91b62rj-q2d91b62rj.gz
@@ -32,9 +31,10 @@ C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debu
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\Furniture.Clientportal.dll
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\refint\Furniture.Clientportal.dll
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\Furniture.Clientportal.pdb
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\Furniture.Clientportal.genruntimeconfig.cache
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\ref\Furniture.Clientportal.dll
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\Furniture.Clientportal.sourcelink.json
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\ceakigtqku-{0}-c379gajzis-c379gajzis.gz
