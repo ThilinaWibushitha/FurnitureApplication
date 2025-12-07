@@ -21,3 +21,4 @@ chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 lettre = { version = "0.11", features = ["tokio1-native-tls"] }
 url = "2"
+rand = "0.8"

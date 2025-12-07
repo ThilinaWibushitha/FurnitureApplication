@@ -1,23 +1,24 @@
 <script>
     let email = "";
-    let password = "";
     let isLoading = false;
+    let successMessage = "";
     let errorMessage = "";
 
-    async function handleLogin() {
+    async function handlePasswordReset() {
         isLoading = true;
         errorMessage = "";
+        successMessage = "";
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate checking
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            if (email === "test@123" && password === "1234") {
-                // Navigate to dashboard on successful login
-                window.location.href = "/";
-            } else {
-                errorMessage =
-                    "Invalid credentials. Please check your email and password.";
-            }
+            // In a real application, you would make an API call to your backend
+            // to handle the password reset request.
+            // For now, we'll just simulate a success message.
+            successMessage = "If an account with that email exists, a password reset link has been sent.";
+            email = "";
+
         } catch (e) {
             errorMessage = "An unexpected error occurred. Please try again.";
         } finally {
@@ -27,16 +28,23 @@
 </script>
 
 <svelte:head>
-    <title>Admin Login - Furniture Store</title>
+    <title>Forgot Password - Admin Portal</title>
 </svelte:head>
 
-<div class="login-wrapper">
-    <div class="login-card">
+<div class="reset-wrapper">
+    <div class="reset-card">
         <div class="header">
-            <span class="badge">🔐 Admin Portal</span>
-            <h1>Welcome Back</h1>
-            <p>Secure access for inventory management</p>
+            <span class="badge">🔑 Password Reset</span>
+            <h1>Forgot Your Password?</h1>
+            <p>Enter your email to receive a reset link.</p>
         </div>
+
+        {#if successMessage}
+            <div class="success-alert">
+                <span>✅</span>
+                <span>{successMessage}</span>
+            </div>
+        {/if}
 
         {#if errorMessage}
             <div class="error-alert">
@@ -45,7 +53,7 @@
             </div>
         {/if}
 
-        <form on:submit|preventDefault={handleLogin}>
+        <form on:submit|preventDefault={handlePasswordReset}>
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input
@@ -57,36 +65,20 @@
                 />
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    bind:value={password}
-                    placeholder="Enter your password"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <a href="/forgot-password" class="forgot-password-link">
-                    Forgot Password?
-                </a>
-            </div>
-
             <button type="submit" class="submit-btn" disabled={isLoading}>
                 {#if isLoading}
                     <span class="spinner"></span>
-                    <span>Authenticating...</span>
+                    <span>Sending...</span>
                 {:else}
-                    <span>Sign In</span>
+                    <span>Send Reset Link</span>
                     <span>→</span>
                 {/if}
             </button>
         </form>
 
         <div class="footer">
-            <a href="http://localhost:5000/login" class="back-link">
-                ← Back to Client Portal
+            <a href="/login" class="back-link">
+                ← Back to Login
             </a>
         </div>
     </div>
@@ -99,7 +91,7 @@
         box-sizing: border-box;
     }
 
-    .login-wrapper {
+    .reset-wrapper {
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -108,7 +100,7 @@
         padding: 20px;
     }
 
-    .login-card {
+    .reset-card {
         width: 100%;
         max-width: 420px;
         background: white;
@@ -145,6 +137,19 @@
     .header p {
         font-size: 15px;
         color: #666;
+    }
+
+    .success-alert {
+        background: rgba(46, 204, 113, 0.1);
+        border: 1px solid rgba(46, 204, 113, 0.3);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #27ae60;
+        font-size: 14px;
     }
 
     .error-alert {
@@ -192,21 +197,6 @@
 
     .form-group input::placeholder {
         color: #9ca3af;
-    }
-
-    .forgot-password-link {
-        display: block;
-        text-align: right;
-        font-size: 14px;
-        font-weight: 600;
-        color: #667eea;
-        text-decoration: none;
-        transition: opacity 0.2s;
-    }
-
-    .forgot-password-link:hover {
-        opacity: 0.8;
-        text-decoration: underline;
     }
 
     .submit-btn {

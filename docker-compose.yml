@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  admin-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./admin-api/.env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16.2-alpine3.19
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./admin-api/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

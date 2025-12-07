@@ -6,6 +6,7 @@ pub mod reports;
 pub mod mail;
 pub mod payments;
 pub mod clients;
+pub mod password_reset;
 
 use actix_web::web;
 
@@ -20,6 +21,6 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .configure(mail::config)
             .configure(payments::config)
             .configure(clients::config)
+            .configure(password_reset::config)
     );
 }
-
