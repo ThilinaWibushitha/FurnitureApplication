@@ -1,0 +1,565 @@
+@page "/orders"
+@using Furniture.Admin.Models
+@using Furniture.Admin.Services
+@inject IPaymentService PaymentService
+@inject NavigationManager Navigation
+
+<PageTitle>My Orders & Payments</PageTitle>
+
+<div class="orders-container">
+    <div class="page-header">
+        <h1>Orders & Payments</h1>
+        <p class="subtitle">View your order history and manage payments</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    }
+    else
+    {
+        <!-- Payment Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-icon pending">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <div class="card-info">
+                    <span class="label">Pending</span>
+                    <span class="value">@payments.Count(p => p.PaymentStatus == "Pending")</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon completed">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <div class="card-info">
+                    <span class="label">Completed</span>
+                    <span class="value">@payments.Count(p => p.PaymentStatus == "Completed")</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon total">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                </div>
+                <div class="card-info">
+                    <span class="label">Total Spent</span>
+                    <span class="value">$@payments.Where(p => p.PaymentStatus == "Completed").Sum(p => p.Amount).ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="@TabClassAll" @onclick="FilterAll">All</button>
+            <button class="@TabClassPending" @onclick="FilterPending">Pending</button>
+            <button class="@TabClassCompleted" @onclick="FilterCompleted">Completed</button>
+            <button class="@TabClassCancelled" @onclick="FilterCancelled">Cancelled</button>
+        </div>
+
+        <!-- Payments List -->
+        @if (filteredPayments.Any())
+        {
+            <div class="payments-list">
+                @foreach (var payment in filteredPayments)
+                {
+                    <div class="payment-card">
+                        <div class="payment-header">
+                            <div class="order-info">
+                                <span class="order-number">Order #@payment.OrderId</span>
+                                <span class="payment-date">@payment.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <span class="status-badge @payment.PaymentStatus.ToLower()">@payment.PaymentStatus</span>
+                        </div>
+                        <div class="payment-body">
+                            <div class="payment-details">
+                                <div class="detail">
+                                    <span class="label">Amount</span>
+                                    <span class="value amount">$@payment.Amount.ToString("N2")</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="label">Method</span>
+                                    <span class="value">@payment.PaymentMethod</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(payment.TransactionRef))
+                                {
+                                    <div class="detail">
+                                        <span class="label">Reference</span>
+                                        <span class="value">@payment.TransactionRef</span>
+                                    </div>
+                                }
+                            </div>
+                            @if (payment.PaymentStatus == "Pending")
+                            {
+                                <div class="payment-actions">
+                                    <button class="btn btn-danger-outline" @onclick="() => ShowCancelModal(payment)">
+                                        Cancel Payment
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+                    <path d="M9 14l-4-4 4-4"/>
+                    <path d="M5 10h11a4 4 0 1 1 0 8h-1"/>
+                </svg>
+                <h3>No payments found</h3>
+                <p>@(statusFilter != null ? $"No {statusFilter.ToLower()} payments" : "You haven't made any payments yet")</p>
+            </div>
+        }
+    }
+</div>
+
+@if (showCancelModal && selectedPayment != null)
+{
+    <div class="modal-overlay" @onclick="HideCancelModal">
+        <div class="modal" @onclick:stopPropagation="true">
+            <h3>Cancel Payment</h3>
+            <p>Are you sure you want to cancel this payment of <strong>$@selectedPayment.Amount.ToString("N2")</strong>?</p>
+            <div class="form-group">
+                <label>Reason for cancellation</label>
+                <textarea @bind="cancelReason" placeholder="Please provide a reason..."></textarea>
+            </div>
+            @if (!string.IsNullOrEmpty(cancelError))
+            {
+                <div class="error-text">@cancelError</div>
+            }
+            <div class="modal-actions">
+                <button class="btn btn-secondary" @onclick="HideCancelModal">Keep Payment</button>
+                <button class="btn btn-danger" @onclick="ConfirmCancel" disabled="@isCancelling">
+                    @(isCancelling ? "Cancelling..." : "Cancel Payment")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .orders-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        color: #1a1a2e;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: #666;
+        margin-top: 0.5rem;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .card-icon.pending {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .card-icon.completed {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .card-icon.total {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .card-info .label {
+        display: block;
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .card-info .value {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 1rem;
+    }
+
+    .tab {
+        padding: 0.5rem 1rem;
+        border: none;
+        background: none;
+        color: #666;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .tab:hover {
+        background: #f3f4f6;
+    }
+
+    .tab.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .payments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .payment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+        background: #fafafa;
+    }
+
+    .order-number {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    .payment-date {
+        font-size: 0.875rem;
+        color: #666;
+        margin-left: 1rem;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-badge.completed {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .status-badge.cancelled {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .payment-body {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .payment-details {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .detail .label {
+        display: block;
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+    }
+
+    .detail .value {
+        font-weight: 500;
+        color: #1a1a2e;
+    }
+
+    .detail .value.amount {
+        font-size: 1.25rem;
+        color: #059669;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+
+    .btn-danger-outline {
+        background: transparent;
+        border: 1px solid #dc2626;
+        color: #dc2626;
+    }
+
+    .btn-danger-outline:hover {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #666;
+    }
+
+    .empty-icon {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .modal h3 {
+        margin-top: 0;
+    }
+
+    .form-group {
+        margin: 1rem 0;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .error-text {
+        color: #dc2626;
+        font-size: 0.875rem;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f4f6;
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @@media (max-width: 768px) {
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .payment-body {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .payment-details {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+@code {
+    private List<Payment> payments = new();
+    private List<Payment> filteredPayments = new();
+    private string? statusFilter = null;
+    private bool isLoading = true;
+
+    private bool showCancelModal = false;
+    private Payment? selectedPayment;
+    private string cancelReason = "";
+    private string cancelError = "";
+    private bool isCancelling = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPayments();
+    }
+
+    private async Task LoadPayments()
+    {
+        isLoading = true;
+        payments = await PaymentService.GetPaymentsAsync();
+        ApplyFilter();
+        isLoading = false;
+    }
+
+    private void FilterByStatus(string? status)
+    {
+        statusFilter = status;
+        ApplyFilter();
+    }
+
+    private void FilterAll() => FilterByStatus(null);
+    private void FilterPending() => FilterByStatus("Pending");
+    private void FilterCompleted() => FilterByStatus("Completed");
+    private void FilterCancelled() => FilterByStatus("Cancelled");
+
+    private string TabClassAll => statusFilter == null ? "tab active" : "tab";
+    private string TabClassPending => statusFilter == "Pending" ? "tab active" : "tab";
+    private string TabClassCompleted => statusFilter == "Completed" ? "tab active" : "tab";
+    private string TabClassCancelled => statusFilter == "Cancelled" ? "tab active" : "tab";
+
+    private void ApplyFilter()
+    {
+        filteredPayments = statusFilter == null 
+            ? payments.ToList() 
+            : payments.Where(p => p.PaymentStatus == statusFilter).ToList();
+    }
+
+    private void ShowCancelModal(Payment payment)
+    {
+        selectedPayment = payment;
+        showCancelModal = true;
+    }
+
+    private void HideCancelModal()
+    {
+        showCancelModal = false;
+        selectedPayment = null;
+        cancelReason = "";
+        cancelError = "";
+    }
+
+    private async Task ConfirmCancel()
+    {
+        if (selectedPayment == null) return;
+
+        cancelError = "";
+        if (string.IsNullOrWhiteSpace(cancelReason))
+        {
+            cancelError = "Please provide a reason for cancellation";
+            return;
+        }
+
+        isCancelling = true;
+        try
+        {
+            await PaymentService.CancelPaymentAsync(selectedPayment.Id, cancelReason);
+            HideCancelModal();
+            await LoadPayments();
+        }
+        catch
+        {
+            cancelError = "Failed to cancel payment. Please try again.";
+        }
+        isCancelling = false;
+    }
+}

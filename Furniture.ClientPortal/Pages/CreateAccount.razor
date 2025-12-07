@@ -1,0 +1,492 @@
+﻿@page "/create-account"
+
+@using System.ComponentModel.DataAnnotations
+@using Furniture.Admin.Models
+@using Furniture.Admin.Services
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<PageTitle>Create Account - Furniture Store</PageTitle>
+
+<style>
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0px) scale(1);
+        }
+
+        50% {
+            transform: translateY(-15px) scale(1.05);
+        }
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --accent: #FFB4A2;
+        --text-main: #603F26;
+        --bg-primary: #EDE7E3;
+        --glass-bg: rgba(255, 255, 255, 0.5);
+        --glass-border: rgba(255, 255, 255, 0.4);
+    }
+
+    body, html {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg-primary);
+    }
+
+    .create-account-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-primary);
+        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Background Effects */
+    .bg-decoration {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .decoration-1 {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+    }
+
+    .decoration-2 {
+        width: 150px;
+        height: 150px;
+        bottom: 15%;
+        right: 10%;
+        animation-delay: 3s;
+    }
+
+    .decoration-3 {
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        right: 5%;
+        animation-delay: 6s;
+    }
+
+    /* Main Card */
+    .account-card {
+        width: 100%;
+        max-width: 520px;
+        padding: 3rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 2;
+        animation: fadeInUp 1s ease-out;
+    }
+
+    /* Header */
+    .account-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--accent), #E89A8C);
+        color: white;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(255, 180, 162, 0.3);
+    }
+
+    .account-header h2 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .account-header p {
+        font-size: 15px;
+        color: var(--text-main);
+        opacity: 0.75;
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 15px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--text-main);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 180, 162, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(96, 63, 38, 0.5);
+        }
+
+    /* Validation Messages */
+    .validation-message {
+        color: #c53030;
+        font-size: 13px;
+        margin-top: 6px;
+        display: block;
+    }
+
+    /* Checkbox */
+    .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--accent);
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .form-check-label {
+        font-size: 14px;
+        color: var(--text-main);
+        line-height: 1.5;
+        cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--accent), #E89A8C);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(255, 180, 162, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 180, 162, 0.45);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .spinner-border {
+        width: 18px;
+        height: 18px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 14px 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    .alert-danger {
+        background: rgba(255, 82, 82, 0.1);
+        border: 1px solid rgba(255, 82, 82, 0.3);
+        color: #c53030;
+    }
+
+    .alert-success {
+        background: rgba(72, 187, 120, 0.1);
+        border: 1px solid rgba(72, 187, 120, 0.3);
+        color: #2f855a;
+    }
+
+    /* Footer */
+    .account-footer {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .btn-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        transition: opacity 0.2s;
+    }
+
+        .btn-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .account-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .account-header h2 {
+            font-size: 26px;
+        }
+
+        .bg-decoration {
+            display: none;
+        }
+    }
+</style>
+
+<div class="create-account-wrapper">
+    <!-- Background Decorations -->
+    <div class="bg-decoration decoration-1"></div>
+    <div class="bg-decoration decoration-2"></div>
+    <div class="bg-decoration decoration-3"></div>
+
+    <div class="account-card">
+        <div class="account-header">
+            <span class="header-badge">👤 Client Registration</span>
+            <h2>Create Account</h2>
+            <p>Join our furniture management system</p>
+        </div>
+
+        <EditForm Model="@createAccountModel" OnValidSubmit="@HandleCreateAccount">
+            <DataAnnotationsValidator />
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <span>⚠️</span>
+                    <span>@errorMessage</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success" role="alert">
+                    <span>✓</span>
+                    <span>@successMessage</span>
+                </div>
+            }
+
+            <div class="form-group">
+                <label for="fullName" class="form-label">Full Name</label>
+                <InputText id="fullName"
+                           class="form-control"
+                           @bind-Value="createAccountModel.FullName"
+                           placeholder="John Doe" />
+                <ValidationMessage For="@(() => createAccountModel.FullName)" class="validation-message" />
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <InputText type="email"
+                           id="email"
+                           class="form-control"
+                           @bind-Value="createAccountModel.Email"
+                           placeholder="john@example.com" />
+                <ValidationMessage For="@(() => createAccountModel.Email)" class="validation-message" />
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <InputText id="username"
+                           class="form-control"
+                           @bind-Value="createAccountModel.Username"
+                           placeholder="johndoe" />
+                <ValidationMessage For="@(() => createAccountModel.Username)" class="validation-message" />
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <InputText type="password"
+                           id="password"
+                           class="form-control"
+                           @bind-Value="createAccountModel.Password"
+                           placeholder="Minimum 6 characters" />
+                <ValidationMessage For="@(() => createAccountModel.Password)" class="validation-message" />
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <InputText type="password"
+                           id="confirmPassword"
+                           class="form-control"
+                           @bind-Value="createAccountModel.ConfirmPassword"
+                           placeholder="Re-enter password" />
+                <ValidationMessage For="@(() => createAccountModel.ConfirmPassword)" class="validation-message" />
+            </div>
+
+            <div class="form-check">
+                <InputCheckbox id="agreeTerms"
+                               class="form-check-input"
+                               @bind-Value="createAccountModel.AgreeTerms" />
+                <label for="agreeTerms" class="form-check-label">
+                    I agree to the Terms of Service and Privacy Policy
+                </label>
+            </div>
+            <ValidationMessage For="@(() => createAccountModel.AgreeTerms)" class="validation-message" />
+
+            <button type="submit" class="btn-primary" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border"></span>
+                    <span>Creating Account...</span>
+                }
+                else
+                {
+                    <span>Create Account</span>
+                    <span>→</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="account-footer">
+            <div>
+                Already have an account? <a href="/client/login" class="btn-link">Sign In</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private CreateUserRequest createAccountModel = new()
+    {
+        AccountType = "client" // Always set to client
+    };
+
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isLoading = false;
+
+    private async Task HandleCreateAccount()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+
+        try
+        {
+            // Validate passwords match
+            if (createAccountModel.Password != createAccountModel.ConfirmPassword)
+            {
+                errorMessage = "Passwords do not match";
+                isLoading = false;
+                return;
+            }
+
+            // Validate terms agreement
+            if (!createAccountModel.AgreeTerms)
+            {
+                errorMessage = "You must agree to the Terms of Service and Privacy Policy";
+                isLoading = false;
+                return;
+            }
+
+            // Ensure account type is client
+            createAccountModel.AccountType = "client";
+
+            // Call the actual API to create user
+            var userResponse = await UserService.CreateUserAsync(createAccountModel);
+
+            if (userResponse != null)
+            {
+                successMessage = $"Account created successfully! Welcome {userResponse.FullName}! Redirecting to login page...";
+
+                // Redirect to client login after 3 seconds
+                await Task.Delay(3000);
+                NavigationManager.NavigateTo("/client/login");
+            }
+            else
+            {
+                errorMessage = "Failed to create account. The username or email may already be in use. Please try different credentials.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Account creation failed: {ex.Message}. Please check your connection and try again.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -1,0 +1,125 @@
+/* Custom CSS for components with Tailwind-inspired styling */
+.page {
+    display: flex;
+}
+
+.sidebar {
+    width: 16rem;
+    background-color: #1e293b;
+    color: white;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+.main {
+    flex: 1;
+    padding: 1.25rem;
+}
+
+.top-row {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-bottom: 1px solid #d1d5db;
+    margin-bottom: 1.25rem;
+}
+
+.content {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+}
+
+.dashboard {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-left: 4px solid #3b82f6;
+}
+
+.dashboard-card h3 {
+    margin: 0 0 0.625rem;
+    font-size: 0.75rem;
+    color: #4b5563;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.stat {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin: 0;
+}
+
+.stat.warning {
+    color: #dc2626;
+}
+
+.stat.success {
+    color: #16a34a;
+}
+
+h1 {
+    color: #1e293b;
+    margin-bottom: 2rem;
+    font-size: 1.875rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* Navigation specific styles */
+.nav-submenu {
+    padding-left: 1.5rem;
+}
+
+.oi {
+    width: 2rem;
+    font-size: 1.125rem;
+    vertical-align: text-top;
+    top: -1px;
+}

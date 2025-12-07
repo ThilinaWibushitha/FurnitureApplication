@@ -1,0 +1,559 @@
+@page "/profile"
+@using Furniture.Admin.Models
+@using Furniture.Admin.Services
+@inject IProfileService ProfileService
+@inject NavigationManager Navigation
+
+<PageTitle>My Profile</PageTitle>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>My Profile</h1>
+        <p class="subtitle">Manage your account settings and preferences</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading profile...</p>
+        </div>
+    }
+    else if (profile == null)
+    {
+        <div class="error-message">
+            <p>Unable to load profile. Please try again.</p>
+            <button class="btn btn-primary" @onclick="LoadProfile">Retry</button>
+        </div>
+    }
+    else
+    {
+        <div class="profile-content">
+            <!-- Profile Card -->
+            <div class="card profile-card">
+                <div class="card-header">
+                    <h2>Personal Information</h2>
+                    @if (!isEditing)
+                    {
+                        <button class="btn btn-outline" @onclick="StartEditing">Edit</button>
+                    }
+                </div>
+                <div class="card-body">
+                    @if (isEditing)
+                    {
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" @bind="editRequest.Phone" placeholder="Enter phone number" />
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" @bind="editRequest.Address" placeholder="Enter address" />
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" @bind="editRequest.City" placeholder="Enter city" />
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="text" @bind="editRequest.DateOfBirth" placeholder="YYYY-MM-DD" />
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select @bind="editRequest.Gender">
+                                    <option value="">Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="PreferNotToSay">Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" @bind="newsletterOptIn" />
+                                    Subscribe to newsletter
+                                </label>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" @onclick="SaveProfile" disabled="@isSaving">
+                                @(isSaving ? "Saving..." : "Save Changes")
+                            </button>
+                            <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="label">Name</span>
+                                <span class="value">@profile.FirstName @profile.LastName</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Email</span>
+                                <span class="value">@(profile.Email ?? "Not set")</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Phone</span>
+                                <span class="value">@(profile.Phone ?? "Not set")</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Address</span>
+                                <span class="value">@(profile.Address ?? "Not set")</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">City</span>
+                                <span class="value">@(profile.City ?? "Not set")</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Loyalty Points</span>
+                                <span class="value points">@profile.LoyaltyPoints pts</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Password Change Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Change Password</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" @bind="currentPassword" placeholder="Enter current password" />
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" @bind="newPassword" placeholder="Enter new password" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" @bind="confirmPassword" placeholder="Confirm new password" />
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(passwordError))
+                    {
+                        <div class="error-text">@passwordError</div>
+                    }
+                    @if (!string.IsNullOrEmpty(passwordSuccess))
+                    {
+                        <div class="success-text">@passwordSuccess</div>
+                    }
+                    <button class="btn btn-primary" @onclick="ChangePassword" disabled="@isChangingPassword">
+                        @(isChangingPassword ? "Changing..." : "Change Password")
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card danger-card">
+                <div class="card-header">
+                    <h2>Danger Zone</h2>
+                </div>
+                <div class="card-body">
+                    <p class="warning-text">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <button class="btn btn-danger" @onclick="ShowDeleteModal">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (showDeleteModal)
+{
+    <div class="modal-overlay" @onclick="HideDeleteModal">
+        <div class="modal" @onclick:stopPropagation="true">
+            <h3>Delete Account</h3>
+            <p>This action cannot be undone. Your account will be scheduled for deletion.</p>
+            <div class="form-group">
+                <label>Enter your password to confirm</label>
+                <input type="password" @bind="deletePassword" placeholder="Password" />
+            </div>
+            <div class="form-group">
+                <label>Reason for leaving (optional)</label>
+                <textarea @bind="deleteReason" placeholder="Tell us why you're leaving..."></textarea>
+            </div>
+            @if (!string.IsNullOrEmpty(deleteError))
+            {
+                <div class="error-text">@deleteError</div>
+            }
+            <div class="modal-actions">
+                <button class="btn btn-secondary" @onclick="HideDeleteModal">Cancel</button>
+                <button class="btn btn-danger" @onclick="DeleteAccount" disabled="@isDeleting">
+                    @(isDeleting ? "Deleting..." : "Delete My Account")
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .profile-header {
+        margin-bottom: 2rem;
+    }
+
+    .profile-header h1 {
+        font-size: 2rem;
+        color: #1a1a2e;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: #666;
+        margin-top: 0.5rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .card-header h2 {
+        font-size: 1.25rem;
+        margin: 0;
+        color: #1a1a2e;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-item .label {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .info-item .value {
+        font-size: 1rem;
+        color: #1a1a2e;
+        font-weight: 500;
+    }
+
+    .info-item .value.points {
+        color: #10b981;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 1px solid #667eea;
+        color: #667eea;
+    }
+
+    .btn-danger {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .danger-card {
+        border: 1px solid #fecaca;
+    }
+
+    .danger-card .card-header {
+        background: #fef2f2;
+    }
+
+    .warning-text {
+        color: #dc2626;
+        margin-bottom: 1rem;
+    }
+
+    .error-text {
+        color: #dc2626;
+        margin: 0.5rem 0;
+    }
+
+    .success-text {
+        color: #10b981;
+        margin: 0.5rem 0;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .modal h3 {
+        margin-top: 0;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        justify-content: flex-end;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f4f6;
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+@code {
+    private ClientProfile? profile;
+    private UpdateProfileRequest editRequest = new();
+    private bool newsletterOptIn;
+    
+    private bool isLoading = true;
+    private bool isEditing = false;
+    private bool isSaving = false;
+    
+    private string currentPassword = "";
+    private string newPassword = "";
+    private string confirmPassword = "";
+    private string passwordError = "";
+    private string passwordSuccess = "";
+    private bool isChangingPassword = false;
+    
+    private bool showDeleteModal = false;
+    private string deletePassword = "";
+    private string deleteReason = "";
+    private string deleteError = "";
+    private bool isDeleting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfile();
+    }
+
+    private async Task LoadProfile()
+    {
+        isLoading = true;
+        profile = await ProfileService.GetProfileAsync();
+        if (profile != null)
+        {
+            editRequest = new UpdateProfileRequest
+            {
+                Phone = profile.Phone,
+                Address = profile.Address,
+                City = profile.City,
+                DateOfBirth = profile.DateOfBirth,
+                Gender = profile.Gender
+            };
+            newsletterOptIn = profile.NewsletterOptIn;
+        }
+        isLoading = false;
+    }
+
+    private void StartEditing() => isEditing = true;
+    private void CancelEditing()
+    {
+        isEditing = false;
+        if (profile != null)
+        {
+            editRequest = new UpdateProfileRequest
+            {
+                Phone = profile.Phone,
+                Address = profile.Address,
+                City = profile.City,
+                DateOfBirth = profile.DateOfBirth,
+                Gender = profile.Gender
+            };
+        }
+    }
+
+    private async Task SaveProfile()
+    {
+        isSaving = true;
+        try
+        {
+            editRequest.NewsletterOptIn = newsletterOptIn;
+            await ProfileService.UpdateProfileAsync(editRequest);
+            await LoadProfile();
+            isEditing = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving profile: {ex.Message}");
+        }
+        isSaving = false;
+    }
+
+    private async Task ChangePassword()
+    {
+        passwordError = "";
+        passwordSuccess = "";
+
+        if (string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword))
+        {
+            passwordError = "Please fill in all password fields";
+            return;
+        }
+
+        if (newPassword != confirmPassword)
+        {
+            passwordError = "New passwords do not match";
+            return;
+        }
+
+        if (newPassword.Length < 6)
+        {
+            passwordError = "Password must be at least 6 characters";
+            return;
+        }
+
+        isChangingPassword = true;
+        try
+        {
+            await ProfileService.ChangePasswordAsync(currentPassword, newPassword);
+            passwordSuccess = "Password changed successfully!";
+            currentPassword = "";
+            newPassword = "";
+            confirmPassword = "";
+        }
+        catch
+        {
+            passwordError = "Failed to change password. Check your current password.";
+        }
+        isChangingPassword = false;
+    }
+
+    private void ShowDeleteModal() => showDeleteModal = true;
+    private void HideDeleteModal()
+    {
+        showDeleteModal = false;
+        deletePassword = "";
+        deleteReason = "";
+        deleteError = "";
+    }
+
+    private async Task DeleteAccount()
+    {
+        deleteError = "";
+        if (string.IsNullOrEmpty(deletePassword))
+        {
+            deleteError = "Password is required";
+            return;
+        }
+
+        isDeleting = true;
+        try
+        {
+            await ProfileService.RequestDeleteAccountAsync(deletePassword, deleteReason);
+            Navigation.NavigateTo("/logout");
+        }
+        catch
+        {
+            deleteError = "Failed to delete account. Check your password.";
+        }
+        isDeleting = false;
+    }
+}

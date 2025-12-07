@@ -1,0 +1,83 @@
+@page "/items"
+@using Furniture.Admin.Models
+@using Furniture.Admin.Services
+@inject IItemService ItemService
+@inject NavigationManager NavigationManager
+
+<h3>Furniture Items</h3>
+
+<div class="mb-3">
+    <button class="btn btn-primary" @onclick="CreateNewItem">Add New Item</button>
+</div>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Sku</td>
+                    <td>@item.Name</td>
+                    <td>@item.CategoryId</td>
+                    <td>@item.BasePrice.ToString("C")</td>
+                    <td>@item.Status</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" @onclick="() => EditItem(item.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteItem(item.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Item>? items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        items = await ItemService.GetItemsAsync();
+    }
+
+    private void CreateNewItem()
+    {
+        NavigationManager.NavigateTo("/items/new");
+    }
+
+    private void EditItem(long id)
+    {
+        NavigationManager.NavigateTo($"/items/{id}");
+    }
+
+    private async Task DeleteItem(long id)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this item?"))
+        {
+            await ItemService.DeleteItemAsync(id);
+            await LoadItems();
+        }
+    }
+    
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
+}

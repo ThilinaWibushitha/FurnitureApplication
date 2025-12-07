@@ -1,0 +1,59 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "Furniture.Admin/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.WebAssembly": "7.0.0"
+        },
+        "runtime": {
+          "Furniture.Admin.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Components.WebAssembly/7.0.0": {
+        "dependencies": {
+          "Microsoft.JSInterop.WebAssembly": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Components.WebAssembly.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51819"
+          }
+        }
+      },
+      "Microsoft.JSInterop.WebAssembly/7.0.0": {
+        "runtime": {
+          "lib/net7.0/Microsoft.JSInterop.WebAssembly.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51819"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Furniture.Admin/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.Components.WebAssembly/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QDsOo/ERsVXdJ7rivq+QS6V9QY1O9a+hBtLuuVtsWnxAcS1AmKUNuub4+0wJ/fSM2xIALeRcDdJkHiUEo7tNWg==",
+      "path": "microsoft.aspnetcore.components.webassembly/7.0.0",
+      "hashPath": "microsoft.aspnetcore.components.webassembly.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.JSInterop.WebAssembly/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xYKKLPa49Y/l/GZiUPgs75PfNdGgx3de1KbGADchNi5ub+vcf15URmogd29PRXNkkc/T2hXnYjzpW+qhlScAFw==",
+      "path": "microsoft.jsinterop.webassembly/7.0.0",
+      "hashPath": "microsoft.jsinterop.webassembly.7.0.0.nupkg.sha512"
+    }
+  }
+}

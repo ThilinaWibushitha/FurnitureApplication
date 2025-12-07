@@ -1,0 +1,94 @@
+@page "/items/new"
+@page "/items/{Id:long}"
+@using Furniture.Admin.Models
+@using Furniture.Admin.Services
+@inject IItemService ItemService
+@inject NavigationManager NavigationManager
+
+<h3>@(Id == 0 ? "Create New Item" : "Edit Item")</h3>
+
+@if (item == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@item" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="sku" class="form-label">SKU</label>
+            <InputText id="sku" class="form-control" @bind-Value="item.Sku" />
+        </div>
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="item.Name" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <InputTextArea id="description" class="form-control" @bind-Value="item.Description" />
+        </div>
+        
+        <div class="mb-3">
+            <label for="price" class="form-label">Base Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="item.BasePrice" />
+        </div>
+        
+        <div class="mb-3">
+            <label for="cost" class="form-label">Base Cost</label>
+            <InputNumber id="cost" class="form-control" @bind-Value="item.BaseCost" />
+        </div>
+
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <InputSelect id="status" class="form-control" @bind-Value="item.Status">
+                <option value="Active">Active</option>
+                <option value="Discontinued">Discontinued</option>
+                <option value="Hidden">Hidden</option>
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private Item? item;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == 0)
+        {
+            item = new Item();
+        }
+        else
+        {
+            item = await ItemService.GetItemAsync(Id);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Id == 0)
+        {
+            await ItemService.CreateItemAsync(item!);
+        }
+        else
+        {
+            await ItemService.UpdateItemAsync(item!);
+        }
+        NavigationManager.NavigateTo("/items");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/items");
+    }
+}
