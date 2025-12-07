@@ -1,7 +1,261 @@
 @page "/cart"
+@using Furniture.ClientPortal.Services
+@using Furniture.ClientPortal.Models
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Cart</PageTitle>
+<PageTitle>Your Cart</PageTitle>
 
-<h1>Your Cart</h1>
+<div class="cart-container">
+    <h1 class="page-title">Shopping Cart</h1>
 
-<p>Here are the items in your cart.</p>
+    @if (CartService.Items.Count == 0)
+    {
+        <div class="empty-cart">
+             <div class="empty-cart-icon">🛒</div>
+             <h3>Your cart is empty</h3>
+             <p>Looks like you haven't added any furniture yet.</p>
+             <button class="btn btn-primary" @onclick="GoShopping">Start Shopping</button>
+        </div>
+    }
+    else
+    {
+        <div class="cart-content">
+            <div class="cart-items">
+                @foreach (var item in CartService.Items)
+                {
+                    <div class="cart-item">
+                        <img src="@(string.IsNullOrEmpty(item.Item.MainImageUrl) ? "images/placeholder.jpg" : item.Item.MainImageUrl)" class="item-image" alt="@item.Item.Name" />
+                        <div class="item-details">
+                            <h3>@item.Item.Name</h3>
+                            <p class="sku">SKU: @item.Item.Sku</p>
+                            <p class="price">$@item.Item.BasePrice.ToString("N2")</p>
+                        </div>
+                        <div class="item-quantity">
+                            <button class="qty-btn" @onclick="() => UpdateQty(item, -1)">-</button>
+                            <span class="qty-val">@item.Quantity</span>
+                            <button class="qty-btn" @onclick="() => UpdateQty(item, 1)">+</button>
+                        </div>
+                        <div class="item-subtotal">
+                            <p>$@item.SubTotal.ToString("N2")</p>
+                        </div>
+                        <button class="btn-remove" @onclick="() => RemoveItem(item.Item.Id)">✕</button>
+                    </div>
+                }
+            </div>
+
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>$@CartService.TotalPrice().ToString("N2")</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Calculating...</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>Calculating...</span>
+                </div>
+                <hr />
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>$@CartService.TotalPrice().ToString("N2")</span>
+                </div>
+                <button class="btn btn-checkout" @onclick="ProceedToCheckout">Proceed to Checkout</button>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .cart-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+
+    .page-title {
+        margin-bottom: 2rem;
+        color: #603F26;
+        border-bottom: 2px solid #FFB4A2;
+        padding-bottom: 0.5rem;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .empty-cart-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .cart-content {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+    }
+
+    .cart-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        gap: 1.5rem;
+    }
+
+    .item-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-details h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .sku {
+        font-size: 0.8rem;
+        color: #888;
+        margin-bottom: 0.5rem;
+    }
+
+    .item-quantity {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8f9fa;
+        padding: 0.2rem;
+        border-radius: 6px;
+    }
+
+    .qty-btn {
+        width: 25px;
+        height: 25px;
+        border: none;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .qty-val {
+        width: 20px;
+        text-align: center;
+    }
+
+    .item-subtotal {
+        width: 100px;
+        text-align: right;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #603F26;
+    }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .cart-summary {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        height: fit-content;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: #555;
+    }
+
+    .summary-row.total {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #603F26;
+        margin-top: 1rem;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        background: #603F26;
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 1.5rem;
+    }
+
+    .btn-checkout:hover {
+        background: #4a301e;
+    }
+
+    @@media (max-width: 900px) {
+        .cart-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@code {
+    protected override void OnInitialized()
+    {
+        CartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CartService.OnChange -= StateHasChanged;
+    }
+
+    private void UpdateQty(CartItem item, int change)
+    {
+        CartService.UpdateQuantity(item.Item.Id, item.Quantity + change);
+    }
+
+    private void RemoveItem(long id)
+    {
+        CartService.RemoveFromCart(id);
+    }
+
+    private void GoShopping()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void ProceedToCheckout()
+    {
+        NavigationManager.NavigateTo("/checkout");
+    }
+}

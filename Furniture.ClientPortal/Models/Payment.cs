@@ -1,4 +1,4 @@
-namespace Furniture.Admin.Models
+namespace Furniture.ClientPortal.Models
 {
     public class Payment
     {
@@ -82,34 +82,5 @@ namespace Furniture.Admin.Models
         public string? Gender { get; set; }
         public bool? NewsletterOptIn { get; set; }
         public string? ProfileImageUrl { get; set; }
-    }
-
-    public class Order
-    {
-        public long Id { get; set; }
-        public string OrderNumber { get; set; } = "";
-        public long? CustomerId { get; set; }
-        public long? UserId { get; set; }
-        public long? BranchId { get; set; }
-        public string Status { get; set; } = "Pending";
-        public decimal TotalAmount { get; set; }
-        public decimal TaxAmount { get; set; }
-        public decimal DiscountAmount { get; set; }
-        public string? PaymentMethod { get; set; }
-        public string? Notes { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public List<OrderItem> Items { get; set; } = new();
-    }
-
-    public class OrderItem
-    {
-        public long Id { get; set; }
-        public long OrderId { get; set; }
-        public long? ItemVariantId { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal Subtotal { get; set; }
-        public decimal Discount { get; set; }
     }
 }

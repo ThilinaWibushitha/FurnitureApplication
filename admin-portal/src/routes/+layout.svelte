@@ -1,14 +1,56 @@
 <script>
-  import { page } from '$app/stores';
-  import Navbar from '$lib/components/Navbar.svelte';
+  import { page } from "$app/stores";
+  import Navbar from "$lib/components/Navbar.svelte";
+  import { onMount } from "svelte";
 
-  const navLinks = [
-    { href: '/', label: 'Dashboard', icon: '📊' },
-    { href: '/clients', label: 'Clients', icon: '👥' },
-    { href: '/items', label: 'Items', icon: '🪑' }
-  ];
+  let user = null;
+  let navLinks = [];
 
-  $: showNavbar = $page.url.pathname !== '/login';
+  onMount(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      user = JSON.parse(userStr);
+    }
+
+    const allLinks = [
+      { href: "/", label: "Dashboard", icon: "📊", roles: ["main_admin"] },
+      // Sub-admins probably shouldn't see the main sales dashboard if it shows financial data
+      // But if they have their own dashboard, we can route differently. For now, hide Main Dashboard.
+      // Actually, request says "Main admin should be able to view daily and monthly sales".
+      // "These other admins... View client profiles, Manage items...". Doesn't list sales.
+
+      {
+        href: "/clients",
+        label: "Clients",
+        icon: "👥",
+        roles: ["main_admin", "admin"],
+      },
+      {
+        href: "/items",
+        label: "Items",
+        icon: "🪑",
+        roles: ["main_admin", "admin"],
+      },
+      {
+        href: "/orders",
+        label: "Orders",
+        icon: "📦",
+        roles: ["main_admin", "admin"],
+      },
+      // { href: '/payments', label: 'Payments', icon: '💳', roles: ['main_admin'] }, // Maybe integrated in Orders
+      { href: "/admins", label: "Admins", icon: "🛡️", roles: ["main_admin"] },
+    ];
+
+    if (user) {
+      navLinks = allLinks.filter((link) =>
+        link.roles.includes(user.account_type),
+      );
+    } else {
+      navLinks = [];
+    }
+  });
+
+  $: showNavbar = $page.url.pathname !== "/login";
 </script>
 
 <div class="layout">
@@ -23,7 +65,12 @@
 <style>
   :global(body) {
     margin: 0;
-    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family:
+      "Inter",
+      "Segoe UI",
+      system-ui,
+      -apple-system,
+      sans-serif;
     background: #0b1020;
     color: #111827;
   }
@@ -32,8 +79,16 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: radial-gradient(circle at top left, rgba(80, 201, 195, 0.12), transparent 45%),
-      radial-gradient(circle at top right, rgba(150, 222, 218, 0.1), transparent 50%),
+    background: radial-gradient(
+        circle at top left,
+        rgba(80, 201, 195, 0.12),
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at top right,
+        rgba(150, 222, 218, 0.1),
+        transparent 50%
+      ),
       #0b1020;
   }
 

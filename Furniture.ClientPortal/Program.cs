@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8081/") });
-builder.Services.AddScoped<Furniture.Admin.Services.IItemService, Furniture.Admin.Services.ItemService>();
-builder.Services.AddScoped<Furniture.Admin.Services.AuthenticationService>();
-builder.Services.AddScoped<Furniture.Admin.Services.IUserService, Furniture.Admin.Services.UserService>();
-builder.Services.AddScoped<Furniture.Admin.Services.IPaymentService, Furniture.Admin.Services.PaymentService>();
-builder.Services.AddScoped<Furniture.Admin.Services.IRatingService, Furniture.Admin.Services.RatingService>();
-builder.Services.AddScoped<Furniture.Admin.Services.IProfileService, Furniture.Admin.Services.ProfileService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IAuthenticationService, Furniture.ClientPortal.Services.AuthenticationService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IUserService, Furniture.ClientPortal.Services.UserService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.ICartService, Furniture.ClientPortal.Services.CartService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IItemService, Furniture.ClientPortal.Services.ItemService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IPaymentService, Furniture.ClientPortal.Services.PaymentService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IRatingService, Furniture.ClientPortal.Services.RatingService>();
+builder.Services.AddScoped<Furniture.ClientPortal.Services.IProfileService, Furniture.ClientPortal.Services.ProfileService>();
 
 
 var app = builder.Build();

@@ -1,0 +1,107 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Furniture.Clientportal
+build_property.RootNamespace = Furniture.Clientportal
+build_property.ProjectDir = C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/AllFurniture.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWxsRnVybml0dXJlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Auth/AdminLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxBZG1pbkxvZ2luLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Auth/MainAdminLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxNYWluQWRtaW5Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Cart.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Checkout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hlY2tvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Client/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50XERhc2hib2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Client/Orders.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50XE9yZGVycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Client/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50XFByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/CreateAccount.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlQWNjb3VudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/ForgotPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9yZ290UGFzc3dvcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Items/ItemEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcSXRlbUVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Items/ItemList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcSXRlbUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Orders.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT3JkZXJzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/TrendingFurniture.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJlbmRpbmdGdXJuaXR1cmUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-23iwwkinww
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

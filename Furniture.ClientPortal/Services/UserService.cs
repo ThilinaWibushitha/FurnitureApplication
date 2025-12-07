@@ -1,6 +1,6 @@
-using Furniture.Clientportal.Models;
+using Furniture.ClientPortal.Models;
 
-namespace Furniture.Clientportal.Services;
+namespace Furniture.ClientPortal.Services;
 
 public class UserService : IUserService
 {

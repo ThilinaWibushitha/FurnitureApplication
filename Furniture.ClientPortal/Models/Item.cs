@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Furniture.Admin.Models
+namespace Furniture.ClientPortal.Models
 {
     public class Item
     {

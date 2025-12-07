@@ -1,0 +1,194 @@
+@page "/orders"
+@using Furniture.ClientPortal.Services
+@using Furniture.ClientPortal.Models
+@inject IOrderService OrderService
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+<PageTitle>My Orders</PageTitle>
+
+<div class="orders-container">
+    <h1 class="page-title">My Orders</h1>
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if (!isAuthenticated)
+    {
+         <div class="alert alert-warning">
+             Please <a href="/login">login</a> to view your orders.
+         </div>
+    }
+    else if (orders == null || orders.Count == 0)
+    {
+        <div class="empty-orders">
+             <h3>No Orders Yet</h3>
+             <p>You haven't placed any orders yet.</p>
+             <button class="btn btn-primary" @onclick="GoShopping">Start Shopping</button>
+        </div>
+    }
+    else
+    {
+        <div class="orders-list">
+            @foreach (var order in orders)
+            {
+                <div class="order-card" @onclick="() => ViewOrder(order.Id)">
+                    <div class="order-header">
+                        <span class="order-number">@order.OrderNumber</span>
+                        <span class="order-date">@order.CreatedAt.ToShortDateString()</span>
+                    </div>
+                    <div class="order-body">
+                         <div class="status-badge @GetStatusClass(order.Status)">
+                             @order.Status
+                         </div>
+                         <div class="order-total">
+                             $@order.TotalAmount.ToString("N2")
+                         </div>
+                    </div>
+                    <div class="order-footer">
+                         <span>View Details →</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .orders-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+    }
+
+    .page-title {
+        border-bottom: 2px solid #FFB4A2;
+        padding-bottom: 0.5rem;
+        margin-bottom: 2rem;
+        color: #603F26;
+    }
+
+    .orders-list {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-color: #FFB4A2;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .order-number {
+        font-weight: bold;
+        color: #603F26;
+    }
+
+    .order-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .order-total {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #603F26;
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-badge.Pending { background: #ffeeba; color: #856404; }
+    .status-badge.Processing { background: #b8daff; color: #004085; }
+    .status-badge.Shipped { background: #c3e6cb; color: #155724; }
+    .status-badge.Delivered { background: #d4edda; color: #155724; }
+    .status-badge.Cancelled { background: #f8d7da; color: #721c24; }
+
+    .order-footer {
+        text-align: right;
+        font-size: 0.9rem;
+        color: #FFB4A2;
+        font-weight: 600;
+    }
+    
+    .empty-orders {
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 12px;
+    }
+</style>
+
+@code {
+    private List<Order> orders = new List<Order>();
+    private bool isLoading = true;
+    private bool isAuthenticated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthenticationService.CheckAuthStatusAsync();
+        if (isAuthenticated)
+        {
+            try
+            {
+                orders = await OrderService.GetOrdersAsync();
+                // Filter by current user if API returns all (API ListOrders returns all currently, might need to filter client side or update API)
+                // Assuming API returns all for now, we filter by UserId
+                var user = await AuthenticationService.GetCurrentUserAsync();
+                if (user != null)
+                {
+                    orders = orders.Where(o => o.UserId == user.Id).OrderByDescending(o => o.CreatedAt).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading orders: {ex.Message}");
+            }
+        }
+        isLoading = false;
+    }
+
+    private void ViewOrder(long id)
+    {
+        // NavigationManager.NavigateTo($"/orders/{id}"); // Details page not implemented yet
+    }
+    
+    private void GoShopping()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+    
+    private string GetStatusClass(string status)
+    {
+        return status;
+    }
+}

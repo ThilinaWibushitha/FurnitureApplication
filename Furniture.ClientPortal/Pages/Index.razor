@@ -1,46 +1,167 @@
 @page "/"
+@using Furniture.ClientPortal.Models
+@using Furniture.ClientPortal.Services
+@inject IItemService ItemService
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Dashboard</PageTitle>
+<PageTitle>Furniture Store - Home</PageTitle>
 
-<h1>Welcome to Furniture Admin</h1>
-
-<div class="dashboard">
-    <div class="dashboard-card">
-        <h3>Total Items</h3>
-        <p class="stat">0</p>
-    </div>
-    <div class="dashboard-card">
-        <h3>Low Stock</h3>
-        <p class="stat warning">0</p>
-    </div>
-    <div class="dashboard-card">
-        <h3>Today's Sales</h3>
-        <p class="stat">$0.00</p>
-    </div>
+<div class="hero-section">
+    <h1>Discover Your Dream Furniture</h1>
+    <p>Elegant designs for modern living.</p>
 </div>
 
+<div class="container mt-4">
+    <!-- Trending Section -->
+    <section class="mb-5">
+        <h2 class="section-title">Trending Now 🔥</h2>
+        @if (isLoading)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
+        else if (items == null || items.Count == 0)
+        {
+             <div class="alert alert-info">No items found. Check back soon!</div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var item in items.Take(3))
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 product-card">
+                            <img src="@(string.IsNullOrEmpty(item.MainImageUrl) ? "images/placeholder.jpg" : item.MainImageUrl)" class="card-img-top" alt="@item.Name" @onclick="() => NavigateToItem(item.Id)">
+                            <div class="card-body">
+                                <h5 class="card-title" @onclick="() => NavigateToItem(item.Id)">@item.Name</h5>
+                                <p class="card-text text-muted">@item.Description?.Substring(0, Math.Min(50, item.Description?.Length ?? 0))...</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">$@item.BasePrice.ToString("N2")</span>
+                                    <button class="btn btn-outline-primary btn-sm" @onclick="() => AddToCart(item)">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- All Items Section -->
+    <section>
+        <h2 class="section-title">All Collection</h2>
+         @if (isLoading)
+        {
+             <!-- Spinner already shown above -->
+        }
+        else if (items != null && items.Count > 0)
+        {
+            <div class="row">
+                @foreach (var item in items)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 product-card small-card">
+                            <img src="@(string.IsNullOrEmpty(item.MainImageUrl) ? "images/placeholder.jpg" : item.MainImageUrl)" class="card-img-top" alt="@item.Name" @onclick="() => NavigateToItem(item.Id)">
+                            <div class="card-body">
+                                <h6 class="card-title" @onclick="() => NavigateToItem(item.Id)">@item.Name</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-small">$@item.BasePrice.ToString("N2")</span>
+                                    <button class="btn btn-sm btn-light" @onclick="() => AddToCart(item)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>
+
+<!-- Toast / Notification container could go here -->
+
 <style>
-    .dashboard {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1rem;
-        margin-top: 2rem;
+    .hero-section {
+        background: linear-gradient(135deg, #FFB4A2, #E89A8C);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        border-radius: 0 0 20px 20px;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        border-bottom: 2px solid #FFB4A2;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        color: #603F26;
     }
 
-    .dashboard-card {
-        background: white;
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .product-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
     }
 
-    .stat {
-        font-size: 2rem;
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+    }
+    
+    .card-title {
+        cursor: pointer;
+    }
+
+    .price {
+        font-size: 1.25rem;
         font-weight: bold;
-        margin: 0.5rem 0 0;
+        color: #2c3e50;
     }
 
-    .warning {
-        color: #dc3545;
+    .price-small {
+        font-weight: bold;
+        color: #2c3e50;
     }
 </style>
+
+@code {
+    private List<Item> items = new List<Item>();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try 
+        {
+            items = await ItemService.GetItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading items: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void NavigateToItem(long id)
+    {
+        NavigationManager.NavigateTo($"/product/{id}"); 
+    }
+
+    private void AddToCart(Item item)
+    {
+        CartService.AddToCart(item, 1);
+        // Could show a toast here
+    }
+}

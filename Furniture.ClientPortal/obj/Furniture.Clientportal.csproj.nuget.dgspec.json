@@ -1,30 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "/home/user/FurnitureApplication/Furniture.ClientPortal/Furniture.Clientportal.csproj": {}
+    "C:\\Users\\Thilina Wibushitha\\Desktop\\FurnitureApp\\Furniture.ClientPortal\\Furniture.Clientportal.csproj": {}
   },
   "projects": {
-    "/home/user/FurnitureApplication/Furniture.ClientPortal/Furniture.Clientportal.csproj": {
+    "C:\\Users\\Thilina Wibushitha\\Desktop\\FurnitureApp\\Furniture.ClientPortal\\Furniture.Clientportal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/user/FurnitureApplication/Furniture.ClientPortal/Furniture.Clientportal.csproj",
+        "projectUniqueName": "C:\\Users\\Thilina Wibushitha\\Desktop\\FurnitureApp\\Furniture.ClientPortal\\Furniture.Clientportal.csproj",
         "projectName": "Furniture.Clientportal",
-        "projectPath": "/home/user/FurnitureApplication/Furniture.ClientPortal/Furniture.Clientportal.csproj",
-        "packagesPath": "/home/user/.nuget/packages/",
-        "outputPath": "/home/user/FurnitureApplication/Furniture.ClientPortal/obj/",
+        "projectPath": "C:\\Users\\Thilina Wibushitha\\Desktop\\FurnitureApp\\Furniture.ClientPortal\\Furniture.Clientportal.csproj",
+        "packagesPath": "C:\\Users\\Thilina Wibushitha\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Thilina Wibushitha\\Desktop\\FurnitureApp\\Furniture.ClientPortal\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/user/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Thilina Wibushitha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -38,15 +45,15 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Components.Web": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -68,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/nix/store/3hhkyi53ky9qwjj9vjzg0pyq333vlrla-dotnet-sdk-9.0.203/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

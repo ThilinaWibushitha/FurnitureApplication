@@ -6,7 +6,7 @@ pub async fn get_daily_sales(pool: &Pool) -> Result<SalesReport, Box<dyn std::er
     
     let row = client.query_one(
         "SELECT 
-            COALESCE(SUM(total_amount), 0) as total_sales,
+            COALESCE(SUM(total_amount), 0)::FLOAT8 as total_sales,
             COUNT(*) as total_orders,
             COALESCE(SUM(oi.quantity), 0) as items_sold
          FROM orders o
@@ -28,7 +28,7 @@ pub async fn get_monthly_sales(pool: &Pool) -> Result<SalesReport, Box<dyn std::
     
     let row = client.query_one(
         "SELECT 
-            COALESCE(SUM(total_amount), 0) as total_sales,
+            COALESCE(SUM(total_amount), 0)::FLOAT8 as total_sales,
             COUNT(*) as total_orders,
             COALESCE(SUM(oi.quantity), 0) as items_sold
          FROM orders o

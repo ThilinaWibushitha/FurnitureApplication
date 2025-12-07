@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using Furniture.Admin.Models;
+using Furniture.ClientPortal.Models;
 
-namespace Furniture.Admin.Services
+namespace Furniture.ClientPortal.Services
 {
     public interface IRatingService
     {

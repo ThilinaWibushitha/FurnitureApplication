@@ -34,7 +34,7 @@ func (h *ItemHandler) RegisterRoutes(r *mux.Router) {
 func (h *ItemHandler) ListItems(w http.ResponseWriter, r *http.Request) {
 	// TODO: Add filters, paging
 	items := []models.Item{}
-	err := h.db.Select(&items, "SELECT * FROM items WHERE status != 'Discontinued' ORDER BY id DESC LIMIT 50")
+	err := h.db.Select(&items, "SELECT * FROM items WHERE status != 'Discontinued' AND is_published_online = true ORDER BY online_sort_order ASC, id DESC LIMIT 50")
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to fetch items")
 		w.WriteHeader(http.StatusInternalServerError)

@@ -6,7 +6,7 @@
         processRefund,
         updatePayment,
         getDailySales,
-        getMonthlySales
+        getMonthlySales,
     } from "$lib/api.js";
 
     let payments = [];
@@ -32,24 +32,41 @@
         loading = true;
         try {
             const filter = statusFilter ? { status: statusFilter } : {};
-            const [paymentsData, cancellationsData, dailyReport, monthlyReport] = await Promise.all([
+            const [
+                paymentsData,
+                cancellationsData,
+                dailyReport,
+                monthlyReport,
+            ] = await Promise.all([
                 getPayments(filter),
                 getCancellations(),
                 getDailySales().catch(() => null),
-                getMonthlySales().catch(() => null)
+                getMonthlySales().catch(() => null),
             ]);
 
             payments = paymentsData;
             cancellations = cancellationsData;
-            dailySales = dailyReport ?? { total_sales: 0, total_orders: 0, items_sold: 0 };
-            monthlySales = monthlyReport ?? { total_sales: 0, total_orders: 0, items_sold: 0 };
+            dailySales = dailyReport ?? {
+                total_sales: 0,
+                total_orders: 0,
+                items_sold: 0,
+            };
+            monthlySales = monthlyReport ?? {
+                total_sales: 0,
+                total_orders: 0,
+                items_sold: 0,
+            };
         } catch (e) {
             console.error("Failed to load data:", e);
             if (!dailySales) {
                 dailySales = { total_sales: 0, total_orders: 0, items_sold: 0 };
             }
             if (!monthlySales) {
-                monthlySales = { total_sales: 0, total_orders: 0, items_sold: 0 };
+                monthlySales = {
+                    total_sales: 0,
+                    total_orders: 0,
+                    items_sold: 0,
+                };
             }
         }
         loading = false;
@@ -192,13 +209,19 @@
             <div class="stat-icon daily">📅</div>
             <div class="stat-info">
                 <div class="stat-heading">
-                    <span class="stat-value">{formatCurrency(dailySales?.total_sales ?? 0)}</span>
+                    <span class="stat-value"
+                        >{formatCurrency(dailySales?.total_sales ?? 0)}</span
+                    >
                     <span class="badge subtle">Today</span>
                 </div>
                 <div class="stat-meta">
-                    <span>{formatNumber(dailySales?.total_orders ?? 0)} orders</span>
+                    <span
+                        >{formatNumber(dailySales?.total_orders ?? 0)} orders</span
+                    >
                     <span>•</span>
-                    <span>{formatNumber(dailySales?.items_sold ?? 0)} items</span>
+                    <span
+                        >{formatNumber(dailySales?.items_sold ?? 0)} items</span
+                    >
                 </div>
             </div>
         </div>
@@ -206,13 +229,19 @@
             <div class="stat-icon monthly">🗓️</div>
             <div class="stat-info">
                 <div class="stat-heading">
-                    <span class="stat-value">{formatCurrency(monthlySales?.total_sales ?? 0)}</span>
+                    <span class="stat-value"
+                        >{formatCurrency(monthlySales?.total_sales ?? 0)}</span
+                    >
                     <span class="badge subtle">This month</span>
                 </div>
                 <div class="stat-meta">
-                    <span>{formatNumber(monthlySales?.total_orders ?? 0)} orders</span>
+                    <span
+                        >{formatNumber(monthlySales?.total_orders ?? 0)} orders</span
+                    >
                     <span>•</span>
-                    <span>{formatNumber(monthlySales?.items_sold ?? 0)} items</span>
+                    <span
+                        >{formatNumber(monthlySales?.items_sold ?? 0)} items</span
+                    >
                 </div>
             </div>
         </div>
@@ -372,12 +401,7 @@
         on:click={handleOverlayClick}
         on:keydown={handleOverlayKeydown}
     >
-        <div
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            tabindex="-1"
-        >
+        <div class="modal" role="dialog" aria-modal="true" tabindex="-1">
             <h2>
                 {modalType === "update" ? "Update Payment" : "Process Refund"}
             </h2>
@@ -633,38 +657,6 @@
     .btn-action {
         background: #f3f4f6;
         color: #374151;
-    }
-
-    .btn-approve {
-        background: #10b981;
-        color: white;
-    }
-
-    .empty {
-        text-align: center;
-        color: #666;
-        padding: 3rem !important;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 3rem;
-    }
-
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f4f6;
-        border-top-color: #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem;
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
     }
 
     .modal-overlay {

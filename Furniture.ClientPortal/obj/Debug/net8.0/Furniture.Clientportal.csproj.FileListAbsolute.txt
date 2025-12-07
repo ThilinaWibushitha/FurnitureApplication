@@ -1,0 +1,9 @@
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.AssemblyInfoInputs.cache
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.AssemblyInfo.cs
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.csproj.CoreCompileInputs.cache
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.RazorAssemblyInfo.cache
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.RazorAssemblyInfo.cs
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net8.0\Furniture.Clientportal.sourcelink.json

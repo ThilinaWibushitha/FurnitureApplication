@@ -1,4 +1,4 @@
-namespace Furniture.Clientportal.Services;
+namespace Furniture.ClientPortal.Services;
 
 public interface IUserService
 {

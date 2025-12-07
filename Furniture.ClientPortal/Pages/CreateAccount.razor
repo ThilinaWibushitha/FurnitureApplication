@@ -4,7 +4,7 @@
 @using Furniture.ClientPortal.Models
 @using Furniture.ClientPortal.Services
 @inject NavigationManager NavigationManager
-@inject IUserService UserService
+@inject IAuthenticationService AuthenticationService
 
 <PageTitle>Create Account</PageTitle>
 
@@ -87,22 +87,26 @@
 
         try
         {
-            var user = new User
+            var createUserRequest = new CreateUserRequest
             {
                 FullName = model.FullName,
                 Email = model.Email,
-                Password = model.Password
+                Username = model.Email, // Use email as username for simplicity
+                Password = model.Password,
+                ConfirmPassword = model.ConfirmPassword,
+                Role = UserRole.Client,
+                AgreeTerms = true 
             };
 
-            //var createdUser = await UserService.CreateUserAsync(user);
-            //if (createdUser != null)
-            //{
-            //    NavigationManager.NavigateTo("/login");
-            //}
-            //else
-            //{
-            //    errorMessage = "There was an error creating your account. Please try again.";
-            //}
+            var createdUser = await AuthenticationService.CreateUserAsync(createUserRequest);
+            if (createdUser != null)
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+            else
+            {
+                errorMessage = "There was an error creating your account. Please try again (Email might be taken).";
+            }
         }
         catch (Exception ex)
         {

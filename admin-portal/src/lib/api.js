@@ -14,6 +14,52 @@ async function fetchApi(endpoint, options = {}) {
     }
 
     return response.json();
+    return response.json();
+}
+
+// Auth API
+export async function login(email, password) {
+    return fetchApi('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+    });
+}
+
+export async function forgotPassword(email) {
+    return fetchApi('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+    });
+}
+
+export async function resetPassword(token, newPassword) {
+    return fetchApi('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ token, new_password: newPassword })
+    });
+}
+
+export async function createAdmin(data) {
+    return fetchApi('/auth/create-admin', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
+// Users API
+export async function getAdmins() {
+    return fetchApi('/users/admins');
+}
+
+export async function getPasswordChangeRequests() {
+    return fetchApi('/users/password-requests');
+}
+
+export async function resolvePasswordChangeRequest(requestId, approved) {
+    return fetchApi('/users/password-requests/resolve', {
+        method: 'POST',
+        body: JSON.stringify({ request_id: requestId, approved })
+    });
 }
 
 // Payments API

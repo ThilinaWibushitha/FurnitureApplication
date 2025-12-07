@@ -5,6 +5,7 @@
 
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
 
 <PageTitle>Login - Furniture @(IsAdminLogin ? "Admin" : "Client")</PageTitle>
 
@@ -617,23 +618,36 @@
 
         try
         {
-            await Task.Delay(1500); // Simulate network delay
+            var request = new Furniture.ClientPortal.Models.LoginRequest 
+            {
+                Username = loginModel.Email, 
+                Password = loginModel.Password
+            };
 
-            // Mock Logic - Replace with actual authentication service
-            if (loginModel.Email.Contains("error"))
+            var response = await AuthenticationService.ClientLoginAsync(request);
+
+            if (response != null && response.User != null)
+            {
+                if (IsAdminLogin && response.User.Role != UserRole.Admin && response.User.Role != UserRole.MainAdmin)
+                {
+                     errorMessage = "Unauthorized access.";
+                }
+                else
+                {
+                    if (IsAdminLogin)
+                        NavigationManager.NavigateTo("http://localhost:5100/", forceLoad: true); // Redirect to Admin Portal
+                    else
+                        NavigationManager.NavigateTo("/", forceLoad: true); 
+                }
+            }
+            else
             {
                 errorMessage = "Invalid credentials. Please check your email and password.";
-                return;
             }
-
-            if (IsAdminLogin)
-                NavigationManager.NavigateTo("/", forceLoad: true);
-            else
-                NavigationManager.NavigateTo("/client/dashboard", forceLoad: true);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            errorMessage = "An unexpected error occurred. Please try again.";
+            errorMessage = "An unexpected error occurred. Please try again. " + ex.Message;
         }
         finally
         {

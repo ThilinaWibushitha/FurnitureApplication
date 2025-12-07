@@ -46,20 +46,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("✅ Data seeded.");
 
     // Create Admin User
-    println!("👤 Creating Admin User (test@123 / 1234)...");
+    // Create Main Admin User
+    println!("👤 Creating Main Admin User (main@admin.com / 1234)...");
     let password_hash = hash("1234", DEFAULT_COST)?;
     
     let rows_updated = client.execute(
         "INSERT INTO users (username, email, password_hash, full_name, account_type, is_active, is_verified) 
          VALUES ($1, $2, $3, $4, $5, $6, $7)
-         ON CONFLICT (username) DO UPDATE SET password_hash = $3, email = $2",
-        &[&"admin", &"test@123", &password_hash, &"System Admin", &"admin", &true, &true]
+         ON CONFLICT (username) DO UPDATE SET password_hash = $3, email = $2, account_type = $5",
+        &[&"main_admin", &"main@admin.com", &password_hash, &"Main Administrator", &"main_admin", &true, &true]
     ).await?;
     
     if rows_updated > 0 {
-        println!("✅ Admin user created/updated.");
+        println!("✅ Main Admin user created/updated.");
     } else {
-        println!("ℹ️ Admin user already exists.");
+        println!("ℹ️ Main Admin user already exists.");
+    }
+    
+    // Create Standard Admin User for testing
+    println!("👤 Creating Standard Admin User (admin@admin.com / 1234)...");
+    let admin_rows = client.execute(
+        "INSERT INTO users (username, email, password_hash, full_name, account_type, is_active, is_verified) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT (username) DO UPDATE SET password_hash = $3, email = $2, account_type = $5",
+        &[&"admin", &"admin@admin.com", &password_hash, &"Standard Admin", &"admin", &true, &true]
+    ).await?;
+
+    if admin_rows > 0 {
+        println!("✅ Standard Admin user created/updated.");
     }
 
     println!("✨ Database setup complete!");

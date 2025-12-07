@@ -25,7 +25,7 @@ pub async fn authenticate(
     let row = client
         .query_opt(
             "SELECT id, username, email, password_hash, full_name, account_type, is_active, is_verified 
-             FROM users WHERE email = $1 AND account_type = 'admin'",
+             FROM users WHERE email = $1 AND (account_type = 'admin' OR account_type = 'main_admin')",
             &[&request.email],
         )
         .await?;

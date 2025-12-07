@@ -4,22 +4,25 @@
     let isLoading = false;
     let errorMessage = "";
 
+    import { login } from "$lib/api";
+
     async function handleLogin() {
         isLoading = true;
         errorMessage = "";
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate checking
+            const response = await login(email, password);
 
-            if (email === "test@123" && password === "1234") {
-                // Navigate to dashboard on successful login
-                window.location.href = "/";
-            } else {
-                errorMessage =
-                    "Invalid credentials. Please check your email and password.";
-            }
+            // Save to local storage
+            localStorage.setItem("token", response.token);
+            localStorage.setItem("user", JSON.stringify(response.user));
+
+            // Navigate to dashboard on successful login
+            window.location.href = "/";
         } catch (e) {
-            errorMessage = "An unexpected error occurred. Please try again.";
+            console.error(e);
+            errorMessage =
+                "Invalid credentials. Please check your email and password.";
         } finally {
             isLoading = false;
         }

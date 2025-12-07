@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Furniture.Admin.Models
+namespace Furniture.ClientPortal.Models
 {
     public class User
     {
@@ -22,7 +22,7 @@ namespace Furniture.Admin.Models
         public string FullName { get; set; } = string.Empty;
         
         [Required]
-        public string AccountType { get; set; } = string.Empty; // "admin" or "client"
+        public UserRole Role { get; set; } = UserRole.Client;
         
         public bool IsActive { get; set; } = true;
         public bool IsVerified { get; set; } = false;
@@ -80,7 +80,7 @@ namespace Furniture.Admin.Models
         public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required]
-        public string AccountType { get; set; } = string.Empty; // "admin" or "client"
+        public UserRole Role { get; set; } = UserRole.Client;
 
         [Range(typeof(bool), "true", "true", ErrorMessage = "You must agree to the terms")]
         public bool AgreeTerms { get; set; }
@@ -96,22 +96,13 @@ namespace Furniture.Admin.Models
         public string? CompanyName { get; set; }
     }
 
-    public class LoginRequest
-    {
-        [Required]
-        public string Username { get; set; } = string.Empty;
-
-        [Required]
-        public string Password { get; set; } = string.Empty;
-    }
-
     public class UserResponse
     {
         public long Id { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
-        public string AccountType { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Client;
         public bool IsActive { get; set; }
         public bool IsVerified { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -53,3 +53,20 @@ pub struct ApproveUserRequest {
     pub user_id: i64,
     pub approved: bool,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PasswordChangeRequest {
+    pub id: i64,
+    pub user_id: i64,
+    pub username: String,
+    pub email: String,
+    pub new_password_hash: String,
+    pub status: String,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ResolvePasswordChangeRequest {
+    pub request_id: i64,
+    pub approved: bool,
+}
