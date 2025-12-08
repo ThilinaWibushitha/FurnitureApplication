@@ -1,5 +1,4 @@
 @page "/login"
-@page "/admin/login"
 @page "/client/login"
 @page "/login/{Type?}"
 
@@ -113,8 +112,7 @@
     private bool isLoading = false;
 
     private bool IsAdminLogin =>
-        string.Equals(Type, "admin", StringComparison.OrdinalIgnoreCase) ||
-        NavigationManager.Uri.Contains("/admin/login", StringComparison.OrdinalIgnoreCase);
+        string.Equals(Type, "admin", StringComparison.OrdinalIgnoreCase);
 
     public class LoginModel
     {
@@ -129,14 +127,15 @@
         public bool RememberMe { get; set; }
     }
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         if (string.IsNullOrEmpty(Type))
         {
-            if (NavigationManager.Uri.Contains("/admin/login"))
-                Type = "admin";
-            else
-                Type = "client";
+            Type = "client";
+        }
+        else if (!string.Equals(Type, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = "client";
         }
     }
 

@@ -1,0 +1,19 @@
+@page "/test"
+
+<PageTitle>Test Page</PageTitle>
+
+<h1>Test Page</h1>
+<p>This is a simple test page to verify the layout is working.</p>
+
+<div style="background: lightblue; padding: 20px; margin: 10px;">
+    <h2>Content Area</h2>
+    <p>If you can see this, the MainLayout is working correctly.</p>
+    <p>Current time: @DateTime.Now</p>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+    }
+}
