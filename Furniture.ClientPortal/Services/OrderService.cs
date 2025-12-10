@@ -8,6 +8,7 @@ namespace Furniture.ClientPortal.Services
         Task<Order?> CreateOrderAsync(CreateOrderRequest request);
         Task<List<Order>> GetOrdersAsync();
         Task<Order?> GetOrderAsync(long id);
+        Task SendOrderConfirmationEmailAsync(Order order);
     }
 
     public class OrderService : IOrderService
@@ -38,5 +39,24 @@ namespace Furniture.ClientPortal.Services
         {
              return await _httpClient.GetFromJsonAsync<Order>($"api/orders/{id}");
         }
+
+        public async Task SendOrderConfirmationEmailAsync(Order order)
+        {
+            var emailRequest = new SendMailRequest
+            {
+                To = "test@test.com", 
+                Subject = $"Order Confirmation: {order.OrderNumber}",
+                Body = $"<h1>Thank you for your order!</h1><p>Your order with number {order.OrderNumber} has been placed successfully.</p>"
+            };
+
+            await _httpClient.PostAsJsonAsync("api/mail/send", emailRequest);
+        }
+    }
+
+    public class SendMailRequest
+    {
+        public string To { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
     }
 }

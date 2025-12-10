@@ -7,15 +7,15 @@
     let error = "";
     async function login() {
         try {
-            await api.post("/auth/admin/login", { email, password });
-            goto("/admin/dashboard");
+            await api.post("/auth/main-admin/login", { email, password });
+            goto("/main-admin/dashboard");
         } catch (e) {
             error = e.message;
         }
     }
 </script>
 
-<h1>Admin Login</h1>
+<h1>Main Admin Login</h1>
 
 <form on:submit|preventDefault={login}>
     <label for="email">Email</label>

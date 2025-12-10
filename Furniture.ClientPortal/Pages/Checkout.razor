@@ -3,6 +3,7 @@
 @using Furniture.ClientPortal.Models
 @inject ICartService CartService
 @inject IOrderService OrderService
+@inject IPaymentService PaymentService
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 
@@ -32,10 +33,9 @@
         <div class="checkout-grid">
             <div class="checkout-form">
                 <h3>Billing & Shipping Details</h3>
-                 <!-- Mock Form for now, assume logged in user data is used -->
                  <div class="form-group">
                      <label>Full Name</label>
-                     <input type="text" class="form-control" value="John Doe" readonly />
+                     <input type="text" class="form-control" @bind="cardHolderName" />
                  </div>
                  <div class="form-group">
                      <label>Address</label>
@@ -51,24 +51,21 @@
                      <label class="radio-option">
                          <input type="radio" name="payment" checked /> Credit Card
                      </label>
-                     <label class="radio-option">
-                         <input type="radio" name="payment" /> PayPal
-                     </label>
                  </div>
                  
                  <div class="card-details">
                      <div class="form-group box">
                          <label>Card Number</label>
-                         <input type="text" class="form-control" placeholder="0000 0000 0000 0000" />
+                         <input type="text" class="form-control" placeholder="0000 0000 0000 0000" @bind="cardNumber"/>
                      </div>
                      <div class="row">
                           <div class="col-6">
                               <label>Expiry</label>
-                              <input type="text" class="form-control" placeholder="MM/YY" />
+                              <input type="text" class="form-control" placeholder="MM/YY" @bind="cardExpiry"/>
                           </div>
                           <div class="col-6">
                               <label>CVC</label>
-                              <input type="text" class="form-control" placeholder="123" />
+                              <input type="text" class="form-control" placeholder="123" @bind="cardCvc"/>
                           </div>
                      </div>
                  </div>
@@ -112,139 +109,14 @@
     }
 </div>
 
-<style>
-    .checkout-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding-bottom: 4rem;
-    }
-
-    .page-title {
-        border-bottom: 2px solid #FFB4A2;
-        padding-bottom: 0.5rem;
-        margin-bottom: 2rem;
-        color: #603F26;
-    }
-
-    .checkout-grid {
-        display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 3rem;
-    }
-
-    .checkout-form {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .form-group {
-        margin-bottom: 1rem;
-    }
-    
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #555;
-    }
-    
-    .form-control {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-    }
-    
-    .order-summary {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        height: fit-content;
-    }
-
-    .items-list {
-        margin-bottom: 1rem;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
-    }
-
-    .total-row {
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: #603F26;
-        margin-top: 1rem;
-    }
-
-    .btn-place-order {
-        width: 100%;
-        background: linear-gradient(135deg, #FFB4A2, #E89A8C);
-        color: white;
-        border: none;
-        padding: 1rem;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin-top: 1.5rem;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
-    
-    .btn-place-order:hover {
-        transform: translateY(-2px);
-    }
-    
-    .btn-place-order:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-
-    .payment-options {
-        display: flex;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .card-details {
-        background: #f9f9f9;
-        padding: 1rem;
-        border-radius: 8px;
-        border: 1px solid #eee;
-    }
-
-    .success-message {
-        text-align: center;
-        padding: 3rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .success-message .icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-    }
-    
-    @@media (max-width: 800px) {
-        .checkout-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
 @code {
     private bool isProcessing = false;
     private string errorMessage = string.Empty;
     private string orderSuccessMessage = string.Empty;
+    private string cardHolderName = string.Empty;
+    private string cardNumber = string.Empty;
+    private string cardExpiry = string.Empty;
+    private string cardCvc = string.Empty;
     
     private async Task PlaceOrder()
     {
@@ -261,43 +133,49 @@
                 return;
             }
 
-            var request = new CreateOrderRequest
+            var orderRequest = new CreateOrderRequest
             {
-                OrderNumber = "ORD-" + DateTime.Now.Ticks.ToString().Substring(10), // Simple Order Number Gen
+                OrderNumber = "ORD-" + DateTime.Now.Ticks.ToString().Substring(10),
                 UserId = user.Id,
-                // CustomerId = 1, // Need to fetch or create a customer profile linked to the user
+                CustomerId = user.Id, 
                 TotalAmount = CartService.TotalPrice(),
                 Status = "Pending",
                 Items = CartService.Items.Select(i => new OrderItem 
                 {
-                    // ItemId = i.Item.Id, // Need to handle ItemVariantId mapping if applicable, assuming ItemVariantId = ItemId for simplicity here or backend handles it
-                    ItemVariantId = i.Item.Id, // Assuming 1:1 for now
+                    ItemVariantId = i.Item.Id,
                     Quantity = i.Quantity,
                     UnitPrice = (decimal)i.Item.BasePrice,
                     Subtotal = i.SubTotal
                 }).ToList()
             };
-            
-            // Note: OrderHandler.go expects CustomerId. For now we might need to assume UserId map, or we pass UserId.
-            // But looking at the go code, it inserts user_id and customer_id.
-            // IF the user doesn't have a customer profile, this might fail if FK constraints exist.
-            // Let's assum user_id is sufficient for now or we set customer_id to user_id (if they are same sequence or 1:1).
-            // Actually, the Go handler does: `INSERT INTO orders ... (customer_id, user_id)`
-            // If they are nullable in DB, we are good. Let's check schema/model.
-            // If CreateOrderRequest model in C# has nullable, we send null?
-            
-            // Using a dummy customer ID for now if needed, or null if schema allows.
-            request.CustomerId = request.UserId; 
 
-            var order = await OrderService.CreateOrderAsync(request);
-            if (order != null)
-            {
-                 orderSuccessMessage = order.OrderNumber;
-                 CartService.ClearCart();
+            var order = await OrderService.CreateOrderAsync(orderRequest);
+
+            if(order == null) {
+                errorMessage = "There was an error creating your order";
+                isProcessing = false;
+                return;
             }
-            else
+
+            var payment = new CreatePaymentRequest 
             {
-                errorMessage = "Failed to place order. Please try again.";
+                OrderId = order.Id,
+                Amount = order.TotalAmount,
+                PaymentMethod = "Credit Card"
+            };
+
+            var paymentResponse = await PaymentService.CreatePaymentAsync(payment);
+
+            if (paymentResponse != null) {
+                try {
+                    await OrderService.SendOrderConfirmationEmailAsync(order);
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+                orderSuccessMessage = order.OrderNumber;
+                CartService.ClearCart();
+            } else {
+                errorMessage = "There was an error processing your payment. Please try again";
             }
         }
         catch (Exception ex)

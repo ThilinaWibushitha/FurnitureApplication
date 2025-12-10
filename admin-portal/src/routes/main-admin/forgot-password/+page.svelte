@@ -1,32 +1,32 @@
 <script>
-    import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
     import { api } from "$lib/api";
     let email = "";
-    let password = "";
     let error = "";
-    async function login() {
+    let success = "";
+    async function requestPasswordReset() {
         try {
-            await api.post("/auth/admin/login", { email, password });
-            goto("/admin/dashboard");
+            await api.post("/auth/main-admin/request-password-reset", { email });
+            success = "Password reset email sent";
         } catch (e) {
             error = e.message;
         }
     }
 </script>
 
-<h1>Admin Login</h1>
+<h1>Forgot Password</h1>
 
-<form on:submit|preventDefault={login}>
+<form on:submit|preventDefault={requestPasswordReset}>
     <label for="email">Email</label>
     <input type="email" id="email" bind:value={email} />
-    <label for="password">Password</label>
-    <input type="password" id="password" bind:value={password} />
-    <button type="submit">Login</button>
+    <button type="submit">Request Password Reset</button>
 </form>
 
 {#if error}
 <p>{error}</p>
+{/if}
+
+{#if success}
+<p>{success}</p>
 {/if}
 
 <style>

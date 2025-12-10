@@ -1,32 +1,41 @@
 <script>
-    import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
     import { api } from "$lib/api";
-    let email = "";
+    import { page } from "$app/stores";
     let password = "";
+    let confirmPassword = "";
     let error = "";
-    async function login() {
+    let success = "";
+    async function resetPassword() {
+        if (password !== confirmPassword) {
+            error = "Passwords do not match";
+            return;
+        }
         try {
-            await api.post("/auth/admin/login", { email, password });
-            goto("/admin/dashboard");
+            const token = $page.url.searchParams.get("token");
+            await api.post("/auth/main-admin/reset-password", { token, password });
+            success = "Password reset successfully";
         } catch (e) {
             error = e.message;
         }
     }
 </script>
 
-<h1>Admin Login</h1>
+<h1>Reset Password</h1>
 
-<form on:submit|preventDefault={login}>
-    <label for="email">Email</label>
-    <input type="email" id="email" bind:value={email} />
+<form on:submit|preventDefault={resetPassword}>
     <label for="password">Password</label>
     <input type="password" id="password" bind:value={password} />
-    <button type="submit">Login</button>
+    <label for="confirm-password">Confirm Password</label>
+    <input type="password" id="confirm-password" bind:value={confirmPassword} />
+    <button type="submit">Reset Password</button>
 </form>
 
 {#if error}
 <p>{error}</p>
+{/if}
+
+{#if success}
+<p>{success}</p>
 {/if}
 
 <style>
