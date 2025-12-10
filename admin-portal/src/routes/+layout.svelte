@@ -13,44 +13,25 @@
     }
 
     const allLinks = [
-      { href: "/", label: "Dashboard", icon: "📊", roles: ["main_admin"] },
-      // Sub-admins probably shouldn't see the main sales dashboard if it shows financial data
-      // But if they have their own dashboard, we can route differently. For now, hide Main Dashboard.
-      // Actually, request says "Main admin should be able to view daily and monthly sales".
-      // "These other admins... View client profiles, Manage items...". Doesn't list sales.
-
-      {
-        href: "/clients",
-        label: "Clients",
-        icon: "👥",
-        roles: ["main_admin", "admin"],
-      },
-      {
-        href: "/items",
-        label: "Items",
-        icon: "🪑",
-        roles: ["main_admin", "admin"],
-      },
-      {
-        href: "/orders",
-        label: "Orders",
-        icon: "📦",
-        roles: ["main_admin", "admin"],
-      },
-      // { href: '/payments', label: 'Payments', icon: '💳', roles: ['main_admin'] }, // Maybe integrated in Orders
-      { href: "/admins", label: "Admins", icon: "🛡️", roles: ["main_admin"] },
+      { href: "/", label: "Dashboard", icon: "chart", roles: ["main_admin"] },
+      { href: "/clients", label: "Clients", icon: "users", roles: ["main_admin", "admin"] },
+      { href: "/items", label: "Items", icon: "chair", roles: ["main_admin", "admin"] },
+      { href: "/orders", label: "Orders", icon: "package", roles: ["main_admin", "admin"] },
+      { href: "/password-requests", label: "Password Requests", icon: "key", roles: ["main_admin"] },
+      { href: "/admins", label: "Admins", icon: "shield", roles: ["main_admin"] },
     ];
 
     if (user) {
-      navLinks = allLinks.filter((link) =>
-        link.roles.includes(user.account_type),
-      );
+      navLinks = allLinks.map((link) => ({
+        ...link,
+        disabled: !link.roles.includes(user.account_type),
+      }));
     } else {
       navLinks = [];
     }
   });
 
-  $: showNavbar = $page.url.pathname !== "/login";
+  $: showNavbar = !$page.url.pathname.includes("/login");
 </script>
 
 <div class="layout">

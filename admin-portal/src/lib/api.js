@@ -1,9 +1,15 @@
-const API_BASE = 'http://localhost:5200/api';
+const API_BASE = '/api';
+
+function getAuthHeaders() {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
 
 async function fetchApi(endpoint, options = {}) {
     const response = await fetch(`${API_BASE}${endpoint}`, {
         headers: {
             'Content-Type': 'application/json',
+            ...getAuthHeaders(),
             ...options.headers
         },
         ...options
@@ -13,7 +19,6 @@ async function fetchApi(endpoint, options = {}) {
         throw new Error(`API Error: ${response.status}`);
     }
 
-    return response.json();
     return response.json();
 }
 
@@ -169,4 +174,39 @@ export async function getDailySales() {
 
 export async function getMonthlySales() {
     return fetchApi('/reports/monthly');
+}
+
+// Orders API
+export async function getOrders(filter = {}) {
+    const params = new URLSearchParams();
+    if (filter.status) params.append('status', filter.status);
+    if (filter.search) params.append('search', filter.search);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return fetchApi(`/orders${query}`);
+}
+
+export async function getOrder(id) {
+    return fetchApi(`/orders/${id}`);
+}
+
+export async function rejectPayment(paymentId, data) {
+    return fetchApi(`/payments/${paymentId}/reject`, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
+// Email API
+export async function sendClientEmail(clientId, data) {
+    return fetchApi(`/mail/client/${clientId}`, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
+export async function sendBulkEmail(data) {
+    return fetchApi('/mail/bulk', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
 }

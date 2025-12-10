@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { getClients, getPendingDeletions, cancelDeletion, confirmDeletion, updateClient } from '$lib/api.js';
+    import { getClients, getPendingDeletions, cancelDeletion, confirmDeletion, updateClient, sendClientEmail } from '$lib/api.js';
     
     let clients = [];
     let pendingDeletions = [];
@@ -8,14 +8,23 @@
     let searchQuery = '';
     let statusFilter = '';
     let activeTab = 'all';
+    let user = null;
     
     let showModal = false;
+    let showEmailModal = false;
     let modalType = '';
     let selectedClient = null;
     let editData = {};
     let processing = false;
+    let successMessage = '';
+    let emailSubject = '';
+    let emailBody = '';
     
     onMount(async () => {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            user = JSON.parse(userStr);
+        }
         await loadData();
     });
     
@@ -61,9 +70,38 @@
     
     function closeModal() {
         showModal = false;
+        showEmailModal = false;
         selectedClient = null;
         editData = {};
+        emailSubject = '';
+        emailBody = '';
     }
+    
+    function openEmailModal(client) {
+        selectedClient = client;
+        emailSubject = '';
+        emailBody = '';
+        showEmailModal = true;
+    }
+    
+    async function handleSendEmail() {
+        if (!selectedClient || !emailSubject || !emailBody) return;
+        processing = true;
+        try {
+            await sendClientEmail(selectedClient.customer_id, {
+                subject: emailSubject,
+                body: emailBody
+            });
+            successMessage = 'Email sent successfully!';
+            closeModal();
+            setTimeout(() => { successMessage = ''; }, 3000);
+        } catch (e) {
+            console.error('Failed to send email:', e);
+        }
+        processing = false;
+    }
+    
+    $: isMainAdmin = user?.account_type === 'main_admin';
     
     async function handleSave() {
         processing = true;
@@ -98,9 +136,13 @@
 
 <div class="container">
     <header>
-        <h1>👥 Client Management</h1>
+        <h1>Client Management</h1>
         <p class="subtitle">Manage client profiles and account requests</p>
     </header>
+    
+    {#if successMessage}
+        <div class="alert success">{successMessage}</div>
+    {/if}
     
     <!-- Stats -->
     <div class="stats-grid">
@@ -210,8 +252,13 @@
                                 Confirm Delete
                             </button>
                         {:else}
-                            <button class="btn-edit" on:click={() => openEditModal(client)}>
-                                Edit Profile
+                            {#if isMainAdmin}
+                                <button class="btn-edit" on:click={() => openEditModal(client)}>
+                                    Edit Profile
+                                </button>
+                            {/if}
+                            <button class="btn-email" on:click={() => openEmailModal(client)}>
+                                Send Email
                             </button>
                         {/if}
                     </div>
@@ -224,6 +271,31 @@
         </div>
     {/if}
 </div>
+
+{#if showEmailModal && selectedClient}
+    <div class="modal-overlay" on:click={closeModal} on:keypress={closeModal}>
+        <div class="modal" on:click|stopPropagation on:keypress|stopPropagation>
+            <h2>Send Email to Client</h2>
+            <p class="modal-subtitle">{selectedClient.first_name} {selectedClient.last_name} - {selectedClient.email}</p>
+            
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" bind:value={emailSubject} placeholder="Email subject..." />
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea bind:value={emailBody} placeholder="Enter your message..." rows="6"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" on:click={closeModal}>Cancel</button>
+                <button class="btn-submit" on:click={handleSendEmail} disabled={processing || !emailSubject || !emailBody}>
+                    {processing ? 'Sending...' : 'Send Email'}
+                </button>
+            </div>
+        </div>
+    </div>
+{/if}
 
 {#if showModal && selectedClient}
     <div class="modal-overlay" on:click={closeModal} on:keypress={closeModal}>
@@ -300,12 +372,23 @@
     header h1 {
         font-size: 2rem;
         margin: 0;
-        color: #1a1a2e;
+        color: #fff;
     }
     
     .subtitle {
-        color: #666;
+        color: rgba(255,255,255,0.7);
         margin: 0.5rem 0 2rem;
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert.success {
+        background: #dcfce7;
+        color: #166534;
     }
     
     .stats-grid {
@@ -508,7 +591,7 @@
         margin-top: 1rem;
     }
     
-    .btn-edit, .btn-restore, .btn-delete {
+    .btn-edit, .btn-restore, .btn-delete, .btn-email {
         flex: 1;
         padding: 0.5rem;
         border: none;
@@ -520,6 +603,11 @@
     .btn-edit {
         background: #f3f4f6;
         color: #374151;
+    }
+    
+    .btn-email {
+        background: #dbeafe;
+        color: #2563eb;
     }
     
     .btn-restore {
@@ -595,12 +683,13 @@
         font-weight: 500;
     }
     
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 1rem;
+        resize: vertical;
     }
     
     .form-group.checkbox label {

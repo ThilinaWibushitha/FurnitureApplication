@@ -1,12 +1,39 @@
 <script>
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
 
   export let navLinks = [];
+  
+  let user = null;
+  
+  onMount(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      user = JSON.parse(userStr);
+    }
+  });
+  
+  function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  }
+  
+  function getInitials(name) {
+    if (!name) return 'AD';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  }
+  
+  function getRoleName(type) {
+    if (type === 'main_admin') return 'Main Admin';
+    if (type === 'admin') return 'Admin';
+    return 'User';
+  }
 </script>
 
 <nav class="navbar">
   <div class="nav-brand">
-    <div class="logo">🛋️</div>
+    <div class="logo">F</div>
     <div class="brand-text">
       <span class="title">Furniture Admin</span>
       <span class="subtitle">Control Center</span>
@@ -15,29 +42,37 @@
 
   <div class="nav-links">
     {#each navLinks as link}
-      <a
-        href={link.href}
-        class:active={
-          $page.url.pathname === link.href ||
-          ($page.url.pathname.startsWith(link.href) && link.href !== '/')
-        }
-      >
-        {#if link.icon}
-          <span class="icon" aria-hidden="true">{link.icon}</span>
-        {/if}
-        <span>{link.label}</span>
-      </a>
+      {#if link.disabled}
+        <span class="nav-link disabled" title="Access restricted">
+          <span>{link.label}</span>
+        </span>
+      {:else}
+        <a
+          href={link.href}
+          class:active={
+            $page.url.pathname === link.href ||
+            ($page.url.pathname.startsWith(link.href) && link.href !== '/')
+          }
+        >
+          <span>{link.label}</span>
+        </a>
+      {/if}
     {/each}
   </div>
 
   <div class="nav-actions">
-    <button class="profile">
-      <span class="avatar" aria-hidden="true">AD</span>
-      <span class="meta">
-        <span class="name">Admin</span>
-        <span class="role">Administrator</span>
-      </span>
-    </button>
+    <div class="profile-wrapper">
+      <button class="profile">
+        <span class="avatar" aria-hidden="true">{user ? getInitials(user.full_name || user.username) : 'AD'}</span>
+        <span class="meta">
+          <span class="name">{user?.full_name || user?.username || 'Admin'}</span>
+          <span class="role">{getRoleName(user?.account_type)}</span>
+        </span>
+      </button>
+      <button class="logout-btn" on:click={handleLogout} title="Logout">
+        Logout
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -100,7 +135,8 @@
     border-radius: 999px;
   }
 
-  .nav-links a {
+  .nav-links a,
+  .nav-links .nav-link {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -123,6 +159,12 @@
     background: linear-gradient(135deg, #50c9c3, #96deda);
     color: #14162b;
     box-shadow: 0 12px 24px rgba(80, 201, 195, 0.25);
+  }
+  
+  .nav-links .nav-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   .icon {
@@ -180,6 +222,28 @@
 
   .role {
     opacity: 0.6;
+  }
+  
+  .profile-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .logout-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .logout-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
   }
 
   @media (max-width: 900px) {
