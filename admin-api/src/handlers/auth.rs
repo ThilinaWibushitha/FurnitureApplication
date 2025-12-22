@@ -6,8 +6,11 @@ use crate::services::auth_service;
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(login)
        .service(create_admin)
+       .service(register_user)
+       .service(create_user)
        .service(request_password_reset)
-       .service(reset_password);
+       .service(reset_password)
+       .service(forgot_password);
 }
 
 #[post("/auth/login")]
@@ -15,6 +18,34 @@ async fn login(pool: web::Data<Pool>, body: web::Json<LoginRequest>) -> HttpResp
     match auth_service::authenticate(&pool, &body).await {
         Ok(response) => HttpResponse::Ok().json(response),
         Err(e) => HttpResponse::Unauthorized().json(serde_json::json!({
+            "error": e.to_string()
+        }))
+    }
+}
+
+#[post("/users")]
+async fn create_user(pool: web::Data<Pool>, body: web::Json<CreateUserRequest>) -> HttpResponse {
+    let mut request = body.into_inner();
+    if request.account_type.is_empty() {
+        request.account_type = "user".to_string();
+    }
+    
+    match auth_service::create_user(&pool, &request).await {
+        Ok(user) => HttpResponse::Created().json(user),
+        Err(e) => HttpResponse::BadRequest().json(serde_json::json!({
+            "error": e.to_string()
+        }))
+    }
+}
+
+#[post("/auth/register")]
+async fn register_user(pool: web::Data<Pool>, body: web::Json<CreateUserRequest>) -> HttpResponse {
+    let mut request = body.into_inner();
+    request.account_type = "user".to_string();
+    
+    match auth_service::create_user(&pool, &request).await {
+        Ok(user) => HttpResponse::Created().json(user),
+        Err(e) => HttpResponse::BadRequest().json(serde_json::json!({
             "error": e.to_string()
         }))
     }
@@ -28,6 +59,18 @@ async fn create_admin(pool: web::Data<Pool>, body: web::Json<CreateUserRequest>)
     match auth_service::create_user(&pool, &request).await {
         Ok(user) => HttpResponse::Created().json(user),
         Err(e) => HttpResponse::BadRequest().json(serde_json::json!({
+            "error": e.to_string()
+        }))
+    }
+}
+
+#[post("/auth/forgot-password")]
+async fn forgot_password(pool: web::Data<Pool>, body: web::Json<RequestPasswordResetRequest>) -> HttpResponse {
+    match auth_service::request_password_reset(&pool, &body.email).await {
+        Ok(_) => HttpResponse::Ok().json(serde_json::json!({
+            "message": "Password reset link sent to your email"
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(serde_json::json!({
             "error": e.to_string()
         }))
     }

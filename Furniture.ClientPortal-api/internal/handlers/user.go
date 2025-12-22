@@ -163,7 +163,8 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify password
-	if err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(req.Password)); err != nil {
+	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(req.Password))
+	if err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -183,22 +184,28 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error getting user profile: %v", err)
 	}
 
-	// Create response
-	response := models.UserResponse{
-		ID:          user.ID,
-		Username:    user.Username,
-		Email:       user.Email,
-		FullName:    user.FullName,
-		AccountType: user.AccountType,
-		IsActive:    user.IsActive,
-		IsVerified:  user.IsVerified,
-		CreatedAt:   user.CreatedAt,
-		LastLogin:   user.LastLogin,
-		Profile:     profile,
+	// Create response structure matching frontend expectation
+	authResponse := struct {
+		Token string              `json:"token"`
+		User  models.UserResponse `json:"user"`
+	}{
+		Token: "mock-jwt-token",
+		User: models.UserResponse{
+			ID:          user.ID,
+			Username:    user.Username,
+			Email:       user.Email,
+			FullName:    user.FullName,
+			AccountType: user.AccountType,
+			IsActive:    user.IsActive,
+			IsVerified:  user.IsVerified,
+			CreatedAt:   user.CreatedAt,
+			LastLogin:   user.LastLogin,
+			Profile:     profile,
+		},
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(authResponse)
 }
 
 // GetUser retrieves a user by ID
