@@ -1,7 +1,114 @@
 @page "/all-furniture"
+@using Furniture.ClientPortal.Services
+@using Furniture.ClientPortal.Models
+@inject IItemService ItemService
 
-<PageTitle>All Furniture</PageTitle>
+<PageTitle>Shop | All Furniture</PageTitle>
 
-<h1>All Furniture</h1>
+<div class="bg-gray-50 min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">All Furniture</h1>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                Browse our extensive collection of premium furniture.
+            </p>
+        </div>
 
-<p>Here are all the furniture items.</p>
+        @if (isLoading)
+        {
+            <div class="flex justify-center items-center h-64">
+                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+        }
+        else if (errorMessage != null)
+        {
+             <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Error loading items</h3>
+                <p class="mt-1 text-sm text-gray-500">@errorMessage</p>
+            </div>
+        }
+        else if (items == null || !items.Any())
+        {
+             <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No items found</h3>
+                <p class="mt-1 text-sm text-gray-500">Check back later for new arrivals.</p>
+            </div>
+        }
+        else
+        {
+            <div class="mt-12 grid gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                @foreach (var item in items)
+                {
+                    <div class="group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="aspect-w-1 aspect-h-1 bg-gray-200 group-hover:opacity-75 relative overflow-hidden h-64">
+                             @if (!string.IsNullOrEmpty(item.MainImageUrl))
+                            {
+                                <img src="@item.MainImageUrl" alt="@item.Name" class="w-full h-full object-center object-cover transition-transform duration-500 group-hover:scale-105">
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                                    <span class="text-4xl">📷</span>
+                                </div>
+                            }
+                             @if (item.DefaultDiscountPercent > 0)
+                            {
+                                <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                    -@item.DefaultDiscountPercent%
+                                </span>
+                            }
+                        </div>
+                        <div class="flex-1 p-4 space-y-2 flex flex-col">
+                            <h3 class="text-sm font-medium text-gray-900">
+                                <a href="product/@item.Id">
+                                    <span aria-hidden="true" class="absolute inset-0"></span>
+                                    @item.Name
+                                </a>
+                            </h3>
+                            <p class="text-sm text-gray-500 line-clamp-2 flex-grow">@item.Description</p>
+                            <div class="flex items-center justify-between pt-2">
+                                <p class="text-lg font-medium text-gray-900">$@item.BasePrice.ToString("N2")</p>
+                                <button class="relative z-10 p-2 text-indigo-600 hover:text-indigo-800 bg-indigo-50 rounded-full hover:bg-indigo-100 transition-colors duration-200">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    <span class="sr-only">Add to cart</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Item>? items;
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            items = await ItemService.GetItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Unable to load furniture items. Please try again later.";
+            // Log exception here in a real app
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

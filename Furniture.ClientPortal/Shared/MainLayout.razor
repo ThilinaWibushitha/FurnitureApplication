@@ -1,28 +1,99 @@
 @inherits LayoutComponentBase
 @inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
-    <div class="page">
-        <div class="sidebar">
-            <AuthorizeView>
-                <Authorized>
-                    <ClientNavMenu />
-                </Authorized>
-                <NotAuthorized>
-                    <NavMenu />
-                </NotAuthorized>
-            </AuthorizeView>
-        </div>
+    <div class="flex flex-col min-h-screen font-sans text-gray-800 bg-gray-50">
+        <!-- Header -->
+        <header class="bg-white shadow-md z-10 sticky top-0">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <a href="/" class="font-playwrite text-2xl font-bold text-gray-900 tracking-wide">
+                                Furniture
+                            </a>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <NavLink href="" Match="NavLinkMatch.All" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                                Home
+                            </NavLink>
+                            <NavLink href="all-furniture" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                                Shop
+                            </NavLink>
+                            <NavLink href="trending-furniture" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                                Trending
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <NavLink href="cart" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+                            <span class="sr-only">Cart</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </NavLink>
 
-        <main>
-            <div class="top-row px-4" style="background-color: #E6D8C3;">
-                 <a href="/login">Login</a>
-                 <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>
+                        <AuthorizeView>
+                            <Authorized>
+                                <div class="ml-3 relative">
+                                    <div class="flex items-center space-x-3">
+                                        <NavLink href="client/dashboard" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200">Dashboard</NavLink>
+                                        <NavLink href="client/orders" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200">Orders</NavLink>
+                                        <NavLink href="client/profile" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200">Profile</NavLink>
+                                        <button @onclick="Logout" class="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200">Logout</button>
+                                    </div>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                                <NavLink href="login" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Log in</NavLink>
+                                <NavLink href="create-account" class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">Sign up</NavLink>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-            <article class="content px-4">
-                @Body
-            </article>
+        <!-- Main Content -->
+        <main class="flex-grow">
+            @Body
         </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white mt-auto">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold tracking-wider uppercase mb-4">About Us</h3>
+                        <p class="text-gray-400 text-sm">We provide high-quality furniture for your modern home. Comfort and style combined.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold tracking-wider uppercase mb-4">Quick Links</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/" class="text-gray-400 hover:text-white transition-colors duration-200">Home</a></li>
+                            <li><a href="all-furniture" class="text-gray-400 hover:text-white transition-colors duration-200">Shop</a></li>
+                            <li><a href="trending-furniture" class="text-gray-400 hover:text-white transition-colors duration-200">Trending</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold tracking-wider uppercase mb-4">Contact</h3>
+                        <p class="text-gray-400 text-sm">123 Furniture St, Design City, DC 10101</p>
+                        <p class="text-gray-400 text-sm">Email: support@furniture.com</p>
+                    </div>
+                </div>
+                <div class="mt-8 border-t border-gray-700 pt-8 text-center">
+                    <p class="text-gray-400 text-sm">&copy; @DateTime.Now.Year Furniture Client. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 </CascadingAuthenticationState>
+
+@code {
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}

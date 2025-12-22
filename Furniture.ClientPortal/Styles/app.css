@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles below */
+@layer components {
+    .font-playwrite {
+        font-family: 'Playwrite US Trad', cursive;
+    }
+
+    /* Legacy Styles - Preserved for pages not yet migrated to Tailwind */
+    .page{display:flex}
+    .sidebar{width:16rem;background-color:#1e293b;color:#fff;min-height:100vh;overflow-y:auto}
+    .main{flex:1;padding:1.25rem}
+    .top-row{background-color:#f3f4f6;padding:1rem;border-bottom:1px solid #d1d5db;margin-bottom:1.25rem}
+    .content{background:#fff;padding:1.25rem;border-radius:.5rem;box-shadow:0 1px 2px 0 rgba(0,0,0,.05)}
+    .nav-link{color:hsla(0,0%,100%,.8);text-decoration:none;display:block;padding:.75rem 1rem;border-radius:.25rem;transition:all .3s ease}
+    .nav-link:hover{background-color:hsla(0,0%,100%,.1);color:#fff}
+    .nav-link.active{background-color:hsla(0,0%,100%,.2);color:#fff;font-weight:600}
+    .dashboard{display:grid;gap:1.25rem;margin-top:1.25rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .dashboard-card{background:#fff;border-radius:.5rem;padding:1.25rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);border-left:4px solid #3b82f6}
+    .dashboard-card h3{margin:0 0 .625rem;font-size:.75rem;color:#4b5563;text-transform:uppercase;font-weight:600}
+    .stat{font-size:1.875rem;font-weight:700;color:#1e293b;margin:0}
+    .stat.warning{color:#dc2626}
+    .stat.success{color:#16a34a}
+    /* h1{color:#1e293b;margin-bottom:2rem;font-size:1.875rem}  -- Commented out to let Tailwind handle h1 */
+    .btn{padding:.5rem 1rem;border-radius:.25rem;font-weight:600;cursor:pointer;transition:all .3s ease}
+    .btn-primary{background-color:#2563eb;color:#fff;border:none}
+    .btn-primary:hover{background-color:#1d4ed8}
+    .nav-submenu{padding-left:1.5rem}
+    .oi{width:2rem;font-size:1.125rem;vertical-align:text-top;top:-1px}
+    /* body,html{height:100%;margin:0;padding:0} -- Let Tailwind handle body */
+    /* body{font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;background-color:#f5f5f5} */
+    .login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#80a1ba;padding:20px}
+    .login-card{background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.1);padding:40px;width:100%;max-width:400px}
+    .login-header{text-align:center;margin-bottom:30px}
+    .login-header h2{color:#37353e;margin-bottom:10px;font-weight:600;font-family:Playwrite US Trad,cursive}
+    .login-header p{color:#1a3636;margin:0;font-size:14px}
+    .login-footer{text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #e6d8c3}
+    .login-footer a{color:#1a3636;text-decoration:none}
+    .login-footer a:hover{color:#37353e}
+    /* .btn-primary overrides might conflict, keeping them for login page specific buttons if they use this class */
+    .client-dashboard{padding:20px}
+    .dashboard-header{margin-bottom:30px}
+    .stat-card{border-radius:12px;padding:20px;display:flex;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:transform .2s}
+    .stat-card:hover{transform:translateY(-2px)}
+    .stat-icon{font-size:2rem;margin-right:15px;opacity:.8}
+    .stat-content h3{margin:0;font-size:2rem;font-weight:700}
+    .stat-content p{margin:0;opacity:.8}
+    .dashboard-content .card{border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:20px}
+    .dashboard-content .card-header{background:transparent;border-bottom:1px solid #eee;font-weight:600}
+}
