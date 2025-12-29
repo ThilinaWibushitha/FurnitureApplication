@@ -3,102 +3,175 @@
 @page "/login/{Type?}"
 
 @using System.ComponentModel.DataAnnotations
+@using Furniture.ClientPortal.Services
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 
 <PageTitle>Login - Furniture @(IsAdminLogin ? "Admin" : "Client")</PageTitle>
 
-<div class="login-wrapper">
-    <!-- Left: Illustration / Image -->
-    <div class="illustration-section">
-        <div class="illustration-bg"></div>
-
-        <!-- Floating Particles -->
-        <div class="floating-particle particle-1"></div>
-        <div class="floating-particle particle-2"></div>
-        <div class="floating-particle particle-3"></div>
-
-        <!-- Image with Badge -->
-        <div class="image-container">
-            <div class="brand-badge">FURNITURE STORE</div>
-            <img src="images/dining-table.jpg" class="showcase-image" alt="Modern Dining Table" />
+<div class="min-h-screen flex bg-gray-50">
+    <!-- Left: Illustration / Image (Hidden on mobile) -->
+    <div class="hidden lg:block relative w-0 flex-1 bg-indigo-900 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 to-purple-800 opacity-90 z-10"></div>
+        <img class="absolute inset-0 h-full w-full object-cover" src="images/dining-table.jpg" alt="Modern Furniture" onerror="this.src='https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'" />
+        
+        <div class="relative z-20 flex flex-col justify-center h-full px-12">
+            <h2 class="text-4xl font-extrabold text-white tracking-tight sm:text-5xl mb-6">
+                Premium Comfort<br/>For Your Home
+            </h2>
+            <p class="text-indigo-200 text-lg max-w-md">
+                Discover our curated collection of luxury furniture designed to transform your living spaces into a sanctuary of style and comfort.
+            </p>
         </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl z-10"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-purple-500 opacity-20 blur-3xl z-10"></div>
     </div>
 
     <!-- Right: Login Form -->
-    <div class="form-section">
-        <div class="glass-card">
-            <div class="form-header">
-                <span class="portal-badge">
-                    @(IsAdminLogin ? "🔐 Admin Access" : "👤 Client Portal")
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white relative">
+        <div class="mx-auto w-full max-w-sm lg:w-96">
+            <div class="text-center lg:text-left">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-6">
+                    @(IsAdminLogin ? "🔐 Admin Access" : "The Furniture Store")
                 </span>
-                <h1>Welcome Back</h1>
-                <p>@(IsAdminLogin ? "Secure access for inventory management" : "Manage your orders and preferences")</p>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                    Welcome back
+                </h1>
+                <p class="mt-2 text-sm text-gray-600">
+                    @(IsAdminLogin ? "Secure access for inventory management" : "Please sign in to your account")
+                </p>
             </div>
 
-            <EditForm Model="@loginModel" OnValidSubmit="@HandleLoginAsync">
-                <DataAnnotationsValidator />
+            <div class="mt-8">
+                <div class="mt-6">
+                    <EditForm Model="@loginModel" OnValidSubmit="@HandleLoginAsync" class="space-y-6">
+                        <DataAnnotationsValidator />
 
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <div class="error-alert" role="alert">
-                        <span>⚠️</span>
-                        <span>@errorMessage</span>
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="rounded-md bg-red-50 p-4 border border-red-200 animate-pulse">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800">
+                                            Login Failed
+                                        </h3>
+                                        <div class="mt-1 text-sm text-red-700">
+                                            @errorMessage
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">
+                                Email address
+                            </label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                    </svg>
+                                </div>
+                                <InputText id="email" 
+                                           @bind-Value="loginModel.Email" 
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                           placeholder="name@example.com"
+                                           autocomplete="email" />
+                            </div>
+                            <ValidationMessage For="@(() => loginModel.Email)" class="mt-1 text-xs text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <InputText type="password" 
+                                           id="password" 
+                                           @bind-Value="loginModel.Password" 
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                           placeholder="Enter your password"
+                                           autocomplete="current-password" />
+                            </div>
+                            <ValidationMessage For="@(() => loginModel.Password)" class="mt-1 text-xs text-red-600" />
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <InputCheckbox id="remember-me" @bind-Value="loginModel.RememberMe" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+                                <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                                    Remember me
+                                </label>
+                            </div>
+
+                            <div class="text-sm">
+                                <a href="/forgot-password" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                                    Forgot your password?
+                                </a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit" disabled="@isLoading" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5">
+                                @if (isLoading)
+                                {
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Signing in...</span>
+                                }
+                                else
+                                {
+                                    <span>Sign in</span>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+
+                <div class="mt-8">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">
+                                Or continue with
+                            </span>
+                        </div>
                     </div>
-                }
 
-                <div class="form-group">
-                    <label class="input-label">Email Address</label>
-                    <InputText @bind-Value="loginModel.Email"
-                               class="input-field"
-                               placeholder="name@example.com"
-                               autocomplete="email" />
-                    <ValidationMessage For="@(() => loginModel.Email)" class="validation-message" />
+                    <div class="mt-6">
+                        <button type="button" @onclick="NavigateToCreateAccount" class="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 font-medium hover:text-indigo-600 transition-colors">
+                            Create a new account
+                        </button>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="input-label">Password</label>
-                    <InputText type="password"
-                               @bind-Value="loginModel.Password"
-                               class="input-field"
-                               placeholder="Enter your password"
-                               autocomplete="current-password" />
-                    <ValidationMessage For="@(() => loginModel.Password)" class="validation-message" />
+                
+                 <div class="mt-6 text-center">
+                    <button type="button" @onclick="NavigateToAdminPortal" class="text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center w-full">
+                        <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        @(IsAdminLogin ? "Back to Client Portal" : "Admin Portal Access")
+                    </button>
                 </div>
-
-                <div class="actions">
-                    <label class="checkbox-wrap">
-                        <InputCheckbox @bind-Value="loginModel.RememberMe" />
-                        <span>Remember me</span>
-                    </label>
-                    <a href="/forgot-password" class="link-text">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="submit-btn" disabled="@isLoading">
-                    @if (isLoading)
-                    {
-                        <span class="spinner"></span>
-                        <span>Authenticating...</span>
-                    }
-                    else
-                    {
-                        <span>Sign In</span>
-                        <span>→</span>
-                    }
-                </button>
-            </EditForm>
-
-            <div class="divider">
-                <span>OR</span>
             </div>
-
-            <button type="button" class="switch-btn" @onclick="NavigateToCreateAccount">
-                Create New Account
-            </button>
-
-            <button type="button" class="admin-portal-btn" @onclick="NavigateToAdminPortal">
-                🔐 Switch to Admin Portal
-            </button>
         </div>
     </div>
 </div>
@@ -190,6 +263,13 @@
 
     private void NavigateToAdminPortal()
     {
-        NavigationManager.NavigateTo("http://localhost:5100/login", forceLoad: true);
+        if (IsAdminLogin)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+             NavigationManager.NavigateTo("http://localhost:5100/login", forceLoad: true);
+        }
     }
 }

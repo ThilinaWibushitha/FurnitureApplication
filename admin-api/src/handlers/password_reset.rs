@@ -1,6 +1,4 @@
 use actix_web::{web, HttpResponse, Responder};
-use crate::{models::*, services::email_service};
-use sqlx::PgPool;
 
 async fn request_password_reset() -> impl Responder {
     HttpResponse::Ok().finish()

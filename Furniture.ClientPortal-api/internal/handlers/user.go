@@ -24,12 +24,12 @@ func NewUserHandler(db *sql.DB) *UserHandler {
 
 // RegisterRoutes registers user-related routes
 func (h *UserHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/api/users", h.CreateUser).Methods("POST")
-	router.HandleFunc("/api/auth/login", h.Login).Methods("POST")
-	router.HandleFunc("/api/users/{id}", h.GetUser).Methods("GET")
-	router.HandleFunc("/api/users/{id}/profile", h.UpdateProfile).Methods("PUT")
-	router.HandleFunc("/api/users/username/{username}", h.GetUserByUsername).Methods("GET")
-	router.HandleFunc("/api/users/{id}", h.DeleteUser).Methods("DELETE")
+	router.HandleFunc("/users", h.CreateUser).Methods("POST")
+	router.HandleFunc("/auth/login", h.Login).Methods("POST")
+	router.HandleFunc("/users/{id}", h.GetUser).Methods("GET")
+	router.HandleFunc("/users/{id}/profile", h.UpdateProfile).Methods("PUT")
+	router.HandleFunc("/users/username/{username}", h.GetUserByUsername).Methods("GET")
+	router.HandleFunc("/users/{id}", h.DeleteUser).Methods("DELETE")
 }
 
 // CreateUser creates a new user
@@ -78,10 +78,10 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	`, req.Username, req.Email, string(hashedPassword), req.FullName, req.AccountType).Scan(&userID)
 
 	if err != nil {
+		log.Printf("Error creating user: %v", err)
 		if strings.Contains(err.Error(), "unique constraint") || strings.Contains(err.Error(), "duplicate key") {
 			http.Error(w, "Username or email already exists", http.StatusConflict)
 		} else {
-			log.Printf("Error creating user: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 		return

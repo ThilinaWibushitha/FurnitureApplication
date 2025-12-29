@@ -6,64 +6,149 @@
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 
-<PageTitle>Create Account</PageTitle>
+<PageTitle>Create Account - Furniture</PageTitle>
 
-<div class="create-account-container">
-    <div class="create-account-card">
-        <div class="header">
-            <h2>Create a New Account</h2>
-            <p>Join us to find the best furniture for your home.</p>
+<div class="min-h-screen flex bg-gray-50">
+    <!-- Left: Illustration / Image (Hidden on mobile) -->
+    <div class="hidden lg:block relative w-0 flex-1 bg-indigo-900 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 to-purple-800 opacity-90 z-10"></div>
+        <img class="absolute inset-0 h-full w-full object-cover" src="images/living-room.jpg" alt="Modern Living Room" onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'" />
+        
+        <div class="relative z-20 flex flex-col justify-center h-full px-12">
+            <h2 class="text-4xl font-extrabold text-white tracking-tight sm:text-5xl mb-6">
+                Join Our Community
+            </h2>
+            <p class="text-indigo-200 text-lg max-w-md">
+                Create an account to unlock exclusive offers, track your orders, and save your favorite items.
+            </p>
         </div>
+        
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl z-10"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-purple-500 opacity-20 blur-3xl z-10"></div>
+    </div>
 
-        <EditForm Model="@model" OnValidSubmit="HandleCreateAccount">
-            <DataAnnotationsValidator />
-
-            <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <InputText id="fullName" class="form-control" @bind-Value="model.FullName" />
-                <ValidationMessage For="@(() => model.FullName)" />
+    <!-- Right: Registration Form -->
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white relative">
+        <div class="mx-auto w-full max-w-sm lg:w-96">
+            <div class="text-center lg:text-left">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-6">
+                    New Customer
+                </span>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                    Create your account
+                </h1>
+                <p class="mt-2 text-sm text-gray-600">
+                    Already have an account?
+                    <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                        Sign in here
+                    </a>
+                </p>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <InputText id="email" type="email" class="form-control" @bind-Value="model.Email" />
-                <ValidationMessage For="@(() => model.Email)" />
+            <div class="mt-8">
+                <EditForm Model="@model" OnValidSubmit="HandleCreateAccount" class="space-y-6">
+                    <DataAnnotationsValidator />
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="rounded-md bg-red-50 p-4 border border-red-200 animate-pulse">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">
+                                        Registration Failed
+                                    </h3>
+                                    <div class="mt-1 text-sm text-red-700">
+                                        @errorMessage
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="mt-1">
+                            <InputText id="fullName" 
+                                       @bind-Value="model.FullName" 
+                                       class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                       placeholder="John Doe"
+                                       autocomplete="name" />
+                        </div>
+                        <ValidationMessage For="@(() => model.FullName)" class="mt-1 text-xs text-red-600" />
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                        <div class="mt-1">
+                            <InputText id="email" 
+                                       type="email" 
+                                       @bind-Value="model.Email" 
+                                       class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                       placeholder="name@example.com"
+                                       autocomplete="email" />
+                        </div>
+                        <ValidationMessage For="@(() => model.Email)" class="mt-1 text-xs text-red-600" />
+                    </div>
+
+                    <div class="space-y-6 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-x-4">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <div class="mt-1">
+                                <InputText type="password" 
+                                           id="password" 
+                                           @bind-Value="model.Password" 
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                           placeholder="******"
+                                           autocomplete="new-password" />
+                            </div>
+                            <ValidationMessage For="@(() => model.Password)" class="mt-1 text-xs text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <div class="mt-1">
+                                <InputText type="password" 
+                                           id="confirmPassword" 
+                                           @bind-Value="model.ConfirmPassword" 
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-3 transition-colors" 
+                                           placeholder="******"
+                                           autocomplete="new-password" />
+                            </div>
+                            <ValidationMessage For="@(() => model.ConfirmPassword)" class="mt-1 text-xs text-red-600" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center">
+                         <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" required>
+                        <label for="terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to the <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms of Service</a> and <a href="#" class="text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <div>
+                        <button type="submit" disabled="@isLoading" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5">
+                            @if (isLoading)
+                            {
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Creating Account...</span>
+                            }
+                            else
+                            {
+                                <span>Create Account</span>
+                            }
+                        </button>
+                    </div>
+                </EditForm>
             </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <InputText id="password" type="password" class="form-control" @bind-Value="model.Password" />
-                <ValidationMessage For="@(() => model.Password)" />
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="model.ConfirmPassword" />
-                <ValidationMessage For="@(() => model.ConfirmPassword)" />
-            </div>
-
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert alert-danger">
-                    @errorMessage
-                </div>
-            }
-
-            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                @if (isLoading)
-                {
-                    <span class="spinner-border spinner-border-sm"></span>
-                    <span>Creating Account...</span>
-                }
-                else
-                {
-                    <span>Create Account</span>
-                }
-            </button>
-        </EditForm>
-
-        <div class="login-link">
-            <p>Already have an account? <a href="/login">Log in</a></p>
         </div>
     </div>
 </div>

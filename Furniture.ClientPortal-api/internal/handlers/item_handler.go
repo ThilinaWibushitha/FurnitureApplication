@@ -34,7 +34,7 @@ func (h *ItemHandler) RegisterRoutes(r *mux.Router) {
 func (h *ItemHandler) ListItems(w http.ResponseWriter, r *http.Request) {
 	// TODO: Add filters, paging
 	items := []models.Item{}
-	err := h.db.Select(&items, "SELECT * FROM items WHERE status != 'Discontinued' AND is_published_online = true ORDER BY online_sort_order ASC, id DESC LIMIT 50")
+	err := h.db.Select(&items, "SELECT * FROM items ORDER BY id DESC LIMIT 50")
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to fetch items")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -94,11 +94,11 @@ func (h *ItemHandler) CreateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := `INSERT INTO items (sku, name, description, department_id, category_id, main_image_url, status, base_price, base_cost, default_discount_percent, tax_class_id, is_published_online, online_sort_order, created_by, updated_by, created_at, updated_at) VALUES
-		($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,NOW(),NOW()) RETURNING id`
+	query := `INSERT INTO items (name, description, price, stock_quantity, category, image_url, sku, dimensions, material, color, is_active, created_at, updated_at) VALUES
+		($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW(),NOW()) RETURNING id`
 
 	var id int64
-	err := h.db.QueryRow(query, item.SKU, item.Name, item.Description, item.DepartmentID, item.CategoryID, item.MainImageURL, item.Status, item.BasePrice, item.BaseCost, item.DefaultDiscountPercent, item.TaxClassID, item.IsPublishedOnline, item.OnlineSortOrder, item.CreatedBy, item.UpdatedBy).Scan(&id)
+	err := h.db.QueryRow(query, item.Name, item.Description, item.Price, item.StockQuantity, item.Category, item.ImageURL, item.SKU, item.Dimensions, item.Material, item.Color, item.IsActive).Scan(&id)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to create item")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -127,9 +127,9 @@ func (h *ItemHandler) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := `UPDATE items SET sku=$1, name=$2, description=$3, department_id=$4, category_id=$5, main_image_url=$6, status=$7, base_price=$8, base_cost=$9, default_discount_percent=$10, tax_class_id=$11, is_published_online=$12, online_sort_order=$13, updated_by=$14, updated_at=NOW() WHERE id=$15`
+	query := `UPDATE items SET name=$1, description=$2, price=$3, stock_quantity=$4, category=$5, image_url=$6, sku=$7, dimensions=$8, material=$9, color=$10, is_active=$11, updated_at=NOW() WHERE id=$12`
 
-	_, err = h.db.Exec(query, item.SKU, item.Name, item.Description, item.DepartmentID, item.CategoryID, item.MainImageURL, item.Status, item.BasePrice, item.BaseCost, item.DefaultDiscountPercent, item.TaxClassID, item.IsPublishedOnline, item.OnlineSortOrder, item.UpdatedBy, id)
+	_, err = h.db.Exec(query, item.Name, item.Description, item.Price, item.StockQuantity, item.Category, item.ImageURL, item.SKU, item.Dimensions, item.Material, item.Color, item.IsActive, id)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to update item")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -149,7 +149,7 @@ func (h *ItemHandler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := `UPDATE items SET status='Discontinued', updated_at=NOW() WHERE id=$1`
+	query := `DELETE FROM items WHERE id=$1`
 	_, err = h.db.Exec(query, id)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to delete item")

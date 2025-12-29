@@ -1,0 +1,5 @@
+[90m2025-12-28T23:00:20+05:30[0m [32mINF[0m [1mStarting server[0m [36mport=[0m8080
+{"level":"error","error":"pq: column \"department_id\" does not exist","time":"2025-12-28T23:00:44+05:30","message":"Failed to fetch items"}
+{"level":"error","error":"pq: column \"department_id\" does not exist","time":"2025-12-28T23:00:45+05:30","message":"Failed to fetch items"}
+{"level":"error","error":"pq: column \"department_id\" does not exist","time":"2025-12-28T23:00:57+05:30","message":"Failed to fetch items"}
+{"level":"error","error":"pq: column \"department_id\" does not exist","time":"2025-12-28T23:00:57+05:30","message":"Failed to fetch items"}

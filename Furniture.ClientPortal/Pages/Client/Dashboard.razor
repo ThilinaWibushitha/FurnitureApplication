@@ -1,140 +1,189 @@
 @page "/client/dashboard"
+@using Furniture.ClientPortal.Services
+@using Furniture.ClientPortal.Models
+@inject NavigationManager NavigationManager
 
-<PageTitle>Client Dashboard - Furniture</PageTitle>
+<PageTitle>Dashboard | Furniture</PageTitle>
 
-<div class="client-dashboard">
-    <div class="dashboard-header">
-        <h1>Client Dashboard</h1>
-        <p class="text-muted">Welcome back! Here's your furniture overview.</p>
-    </div>
+<div class="bg-gray-50 min-h-screen py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="md:flex md:items-center md:justify-between mb-8">
+            <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    Client Dashboard
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Welcome back! Here's what's happening with your account.
+                </p>
+            </div>
+            <div class="mt-4 flex md:mt-0 md:ml-4">
+                <button @onclick='() => NavigationManager.NavigateTo("all-furniture")' class="inline-flex items-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                    Browse Shop
+                </button>
+            </div>
+        </div>
 
-    <div class="dashboard-stats">
-        <div class="row">
-            <div class="col-md-3 mb-4">
-                <div class="stat-card bg-primary text-white">
-                    <div class="stat-icon">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@totalItems</h3>
-                        <p>Total Items</p>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <!-- Total Items -->
+            <div class="bg-white overflow-hidden shadow rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+                                📦
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Items</dt>
+                                <dd>
+                                    <div class="text-lg font-bold text-gray-900">@totalItems</div>
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-4">
-                <div class="stat-card bg-success text-white">
-                    <div class="stat-icon">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@availableItems</h3>
-                        <p>Available</p>
+
+            <!-- Available -->
+            <div class="bg-white overflow-hidden shadow rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl">
+                                ✅
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Available</dt>
+                                <dd>
+                                    <div class="text-lg font-bold text-gray-900">@availableItems</div>
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-4">
-                <div class="stat-card bg-warning text-white">
-                    <div class="stat-icon">
-                        <i class="bi bi-clock"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@pendingOrders</h3>
-                        <p>Pending Orders</p>
+
+            <!-- Pending Orders -->
+            <div class="bg-white overflow-hidden shadow rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+                                🕒
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Pending Orders</dt>
+                                <dd>
+                                    <div class="text-lg font-bold text-gray-900">@pendingOrders</div>
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-4">
-                <div class="stat-card bg-info text-white">
-                    <div class="stat-icon">
-                        <i class="bi bi-cart"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>@completedOrders</h3>
-                        <p>Completed Orders</p>
+
+            <!-- Completed Orders -->
+            <div class="bg-white overflow-hidden shadow rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                                🎉
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Completed Orders</dt>
+                                <dd>
+                                    <div class="text-lg font-bold text-gray-900">@completedOrders</div>
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="dashboard-content">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Recent Orders</h5>
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <!-- Recent Orders -->
+            <div class="lg:col-span-2">
+                <div class="bg-white shadow rounded-2xl border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Orders</h3>
+                        <a href="client/orders" class="text-sm text-indigo-600 hover:text-indigo-900">View all</a>
                     </div>
-                    <div class="card-body">
+                    <div class="bg-white">
                         @if (recentOrders.Any())
                         {
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var order in recentOrders)
-                                        {
-                                            <tr>
-                                                <td>@order.Id</td>
-                                                <td>@order.Date.ToString("MM/dd/yyyy")</td>
-                                                <td>
-                                                    <span class="badge bg-@(order.Status == "Completed" ? "success" : "warning")">
-                                                        @order.Status
-                                                    </span>
-                                                </td>
-                                                <td>@order.Total.ToString("C")</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                            <ul role="list" class="divide-y divide-gray-200">
+                                @foreach (var order in recentOrders)
+                                {
+                                    <li class="px-6 py-4 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex flex-col">
+                                                <p class="text-sm font-medium text-indigo-600 truncate">@order.Id</p>
+                                                <p class="text-sm text-gray-500">@order.Date.ToString("MMM dd, yyyy")</p>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @(order.Status == "Completed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800")">
+                                                    @order.Status
+                                                </span>
+                                                <p class="ml-4 text-sm font-bold text-gray-900">@order.Total.ToString("C")</p>
+                                                <svg class="ml-4 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
                         }
                         else
                         {
-                            <p class="text-muted">No recent orders found.</p>
+                            <div class="text-center py-10">
+                                <p class="text-gray-500">No recent orders details.</p>
+                            </div>
                         }
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Quick Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="bi bi-plus-circle me-2"></i>
-                                New Order
-                            </button>
-                            <button class="btn btn-outline-primary">
-                                <i class="bi bi-search me-2"></i>
-                                Browse Items
-                            </button>
-                            <button class="btn btn-outline-secondary">
-                                <i class="bi bi-clock-history me-2"></i>
-                                Order History
-                            </button>
+
+            <!-- Quick Info -->
+            <div class="lg:col-span-1 space-y-8">
+                <div class="bg-white shadow rounded-2xl border border-gray-100 p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Account Info</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between border-b border-gray-100 pb-2">
+                             <span class="text-sm text-gray-500">Client ID</span>
+                             <span class="text-sm font-medium text-gray-900">#CLT001</span>
                         </div>
+                        <div class="flex justify-between border-b border-gray-100 pb-2">
+                             <span class="text-sm text-gray-500">Type</span>
+                             <span class="text-sm font-medium text-indigo-600">Premium Member</span>
+                        </div>
+                         <div class="flex justify-between pb-2">
+                             <span class="text-sm text-gray-500">Member Since</span>
+                             <span class="text-sm font-medium text-gray-900">Jan 2024</span>
+                        </div>
+                        <button @onclick='() => NavigationManager.NavigateTo("client/profile")' class="w-full mt-2 inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Edit Profile
+                        </button>
                     </div>
                 </div>
 
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h5>Account Info</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Client ID:</strong> #CLT001</p>
-                        <p><strong>Account Type:</strong> Premium</p>
-                        <p><strong>Member Since:</strong> 01/15/2024</p>
-                        <button class="btn btn-sm btn-outline-primary">View Profile</button>
-                    </div>
+                 <div class="bg-gradient-to-br from-indigo-600 to-purple-700 shadow-lg rounded-2xl p-6 text-white text-center">
+                    <h3 class="text-lg font-bold mb-2">Need Help?</h3>
+                    <p class="text-indigo-100 text-sm mb-6">Our support team is available 24/7 to assist you with any questions.</p>
+                    <button class="bg-white text-indigo-600 px-6 py-2 rounded-full font-semibold text-sm hover:bg-indigo-50 transition-colors">
+                        Contact Support
+                    </button>
                 </div>
             </div>
         </div>

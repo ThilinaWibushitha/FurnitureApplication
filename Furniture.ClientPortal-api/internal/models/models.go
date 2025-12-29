@@ -36,24 +36,20 @@ type Category struct {
 // Corresponds to items table
 
 type Item struct {
-	ID                     int64     `db:"id" json:"id"`
-	SKU                    string    `db:"sku" json:"sku"`
-	Name                   string    `db:"name" json:"name"`
-	Description            string    `db:"description" json:"description"`
-	DepartmentID           int64     `db:"department_id" json:"department_id"`
-	CategoryID             int64     `db:"category_id" json:"category_id"`
-	MainImageURL           string    `db:"main_image_url" json:"main_image_url"`
-	Status                 string    `db:"status" json:"status"`
-	BasePrice              float64   `db:"base_price" json:"base_price"`
-	BaseCost               float64   `db:"base_cost" json:"base_cost"`
-	DefaultDiscountPercent float64   `db:"default_discount_percent" json:"default_discount_percent"`
-	TaxClassID             int64     `db:"tax_class_id" json:"tax_class_id"`
-	IsPublishedOnline      bool      `db:"is_published_online" json:"is_published_online"`
-	OnlineSortOrder        int       `db:"online_sort_order" json:"online_sort_order"`
-	CreatedBy              int64     `db:"created_by" json:"created_by"`
-	UpdatedBy              int64     `db:"updated_by" json:"updated_by"`
-	CreatedAt              time.Time `db:"created_at" json:"created_at"`
-	UpdatedAt              time.Time `db:"updated_at" json:"updated_at"`
+	ID            int64     `db:"id" json:"id"`
+	Name          string    `db:"name" json:"name"`
+	Description   *string   `db:"description" json:"description,omitempty"`
+	Price         float64   `db:"price" json:"price"`
+	StockQuantity int       `db:"stock_quantity" json:"stock_quantity"`
+	Category      *string   `db:"category" json:"category,omitempty"`
+	ImageURL      *string   `db:"image_url" json:"image_url,omitempty"`
+	SKU           *string   `db:"sku" json:"sku,omitempty"`
+	Dimensions    *string   `db:"dimensions" json:"dimensions,omitempty"`
+	Material      *string   `db:"material" json:"material,omitempty"`
+	Color         *string   `db:"color" json:"color,omitempty"`
+	IsActive      *bool     `db:"is_active" json:"is_active,omitempty"`
+	CreatedAt     time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at" json:"updated_at"`
 }
 
 // ItemVariant represents a variant of a furniture item

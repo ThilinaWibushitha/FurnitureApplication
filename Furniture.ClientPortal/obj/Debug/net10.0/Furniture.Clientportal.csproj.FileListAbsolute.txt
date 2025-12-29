@@ -23,9 +23,6 @@ C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debu
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\Pages\Login.razor.rz.scp.css
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\bundle\Furniture.Clientportal.styles.css
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\scopedcss\projectbundle\Furniture.Clientportal.bundle.scp.css
-C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\ceakigtqku-{0}-c379gajzis-c379gajzis.gz
-C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\51lmz9xor5-{0}-wosmlzk2si-wosmlzk2si.gz
-C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\o27zwwej4h-{0}-wosmlzk2si-wosmlzk2si.gz
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.development.json
@@ -38,3 +35,8 @@ C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debu
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\ref\Furniture.Clientportal.dll
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\huxkdmr7la-{0}-wmp8iwak4q-wmp8iwak4q.gz
 C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\wnltj7a010-{0}-2lgipwaf5j-2lgipwaf5j.gz
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\bin\Debug\net10.0\package-lock.json
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\ceakigtqku-{0}-cdit4e9uny-cdit4e9uny.gz
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\51lmz9xor5-{0}-w7rx4n4ea0-w7rx4n4ea0.gz
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\compressed\o27zwwej4h-{0}-w7rx4n4ea0-w7rx4n4ea0.gz
+C:\Users\Thilina Wibushitha\Desktop\FurnitureApp\Furniture.ClientPortal\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

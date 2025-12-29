@@ -4,229 +4,127 @@
 @inject ICartService CartService
 @inject NavigationManager NavigationManager
 
-<PageTitle>Your Cart</PageTitle>
+<PageTitle>Your Cart | Furniture</PageTitle>
 
-<div class="cart-container">
-    <h1 class="page-title">Shopping Cart</h1>
+<div class="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 mb-8">Shopping Cart</h1>
 
-    @if (CartService.Items.Count == 0)
-    {
-        <div class="empty-cart">
-             <div class="empty-cart-icon">🛒</div>
-             <h3>Your cart is empty</h3>
-             <p>Looks like you haven't added any furniture yet.</p>
-             <button class="btn btn-primary" @onclick="GoShopping">Start Shopping</button>
-        </div>
-    }
-    else
-    {
-        <div class="cart-content">
-            <div class="cart-items">
-                @foreach (var item in CartService.Items)
-                {
-                    <div class="cart-item">
-                        <img src="@(string.IsNullOrEmpty(item.Item.MainImageUrl) ? "images/placeholder.jpg" : item.Item.MainImageUrl)" class="item-image" alt="@item.Item.Name" />
-                        <div class="item-details">
-                            <h3>@item.Item.Name</h3>
-                            <p class="sku">SKU: @item.Item.Sku</p>
-                            <p class="price">$@item.Item.BasePrice.ToString("N2")</p>
-                        </div>
-                        <div class="item-quantity">
-                            <button class="qty-btn" @onclick="() => UpdateQty(item, -1)">-</button>
-                            <span class="qty-val">@item.Quantity</span>
-                            <button class="qty-btn" @onclick="() => UpdateQty(item, 1)">+</button>
-                        </div>
-                        <div class="item-subtotal">
-                            <p>$@item.SubTotal.ToString("N2")</p>
-                        </div>
-                        <button class="btn-remove" @onclick="() => RemoveItem(item.Item.Id)">✕</button>
-                    </div>
-                }
+        @if (CartService.Items.Count == 0)
+        {
+            <div class="text-center py-24 bg-white rounded-3xl shadow-sm">
+                 <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-indigo-50 mb-6">
+                    <span class="text-4xl">🛒</span>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">Your cart is empty</h3>
+                <p class="text-gray-500 mb-8">Looks like you haven't added any furniture yet.</p>
+                <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg" @onclick="GoShopping">
+                    Start Shopping
+                </button>
             </div>
-
-            <div class="cart-summary">
-                <h3>Order Summary</h3>
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span>$@CartService.TotalPrice().ToString("N2")</span>
-                </div>
-                <div class="summary-row">
-                    <span>Shipping</span>
-                    <span>Calculating...</span>
-                </div>
-                <div class="summary-row">
-                    <span>Tax</span>
-                    <span>Calculating...</span>
-                </div>
-                <hr />
-                <div class="summary-row total">
-                    <span>Total</span>
-                    <span>$@CartService.TotalPrice().ToString("N2")</span>
-                </div>
-                <button class="btn btn-checkout" @onclick="ProceedToCheckout">Proceed to Checkout</button>
-            </div>
-        </div>
-    }
-</div>
-
-<style>
-    .cart-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-bottom: 3rem;
-    }
-
-    .page-title {
-        margin-bottom: 2rem;
-        color: #603F26;
-        border-bottom: 2px solid #FFB4A2;
-        padding-bottom: 0.5rem;
-    }
-
-    .empty-cart {
-        text-align: center;
-        padding: 4rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .empty-cart-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .cart-content {
-        display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 2rem;
-    }
-
-    .cart-items {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .cart-item {
-        display: flex;
-        align-items: center;
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        gap: 1.5rem;
-    }
-
-    .item-image {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .item-details {
-        flex: 1;
-    }
-
-    .item-details h3 {
-        font-size: 1.1rem;
-        margin-bottom: 0.2rem;
-    }
-
-    .sku {
-        font-size: 0.8rem;
-        color: #888;
-        margin-bottom: 0.5rem;
-    }
-
-    .item-quantity {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: #f8f9fa;
-        padding: 0.2rem;
-        border-radius: 6px;
-    }
-
-    .qty-btn {
-        width: 25px;
-        height: 25px;
-        border: none;
-        background: white;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .qty-val {
-        width: 20px;
-        text-align: center;
-    }
-
-    .item-subtotal {
-        width: 100px;
-        text-align: right;
-        font-weight: bold;
-        font-size: 1.1rem;
-        color: #603F26;
-    }
-
-    .btn-remove {
-        background: none;
-        border: none;
-        color: #dc3545;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    .cart-summary {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        height: fit-content;
-    }
-
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-        color: #555;
-    }
-
-    .summary-row.total {
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: #603F26;
-        margin-top: 1rem;
-    }
-
-    .btn-checkout {
-        width: 100%;
-        background: #603F26;
-        color: white;
-        padding: 1rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 1.5rem;
-    }
-
-    .btn-checkout:hover {
-        background: #4a301e;
-    }
-
-    @@media (max-width: 900px) {
-        .cart-content {
-            grid-template-columns: 1fr;
         }
-    }
-</style>
+        else
+        {
+            <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+                <!-- Cart Items -->
+                <section class="lg:col-span-7">
+                    <ul role="list" class="border-t border-b border-gray-200 divide-y divide-gray-200">
+                        @foreach (var item in CartService.Items)
+                        {
+                            <li class="flex py-6 sm:py-10">
+                                <div class="flex-shrink-0">
+                                    <img src="@(string.IsNullOrEmpty(item.Item.MainImageUrl) ? "images/placeholder.jpg" : item.Item.MainImageUrl)" 
+                                         alt="@item.Item.Name" 
+                                         class="w-24 h-24 sm:w-32 sm:h-32 rounded-xl object-center object-cover border border-gray-200" />
+                                </div>
+
+                                <div class="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
+                                    <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+                                        <div>
+                                            <div class="flex justify-between">
+                                                <h3 class="text-lg font-medium text-gray-900">
+                                                    <a href="product/@item.Item.Id" class="hover:text-indigo-600 transition-colors">@item.Item.Name</a>
+                                                </h3>
+                                            </div>
+                                            <p class="mt-1 text-sm text-gray-500">SKU: @item.Item.Sku</p>
+                                            <p class="mt-1 text-lg font-bold text-gray-900">$@item.Item.BasePrice.ToString("N2")</p>
+                                        </div>
+
+                                        <div class="mt-4 sm:mt-0 sm:pr-9">
+                                            <div class="flex items-center border border-gray-300 rounded-md w-max">
+                                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-md transition-colors" @onclick="() => UpdateQty(item, -1)">-</button>
+                                                <span class="px-3 py-1 text-gray-900 border-l border-r border-gray-300 min-w-[2.5rem] text-center">@item.Quantity</span>
+                                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-md transition-colors" @onclick="() => UpdateQty(item, 1)">+</button>
+                                            </div>
+                                            <div class="absolute top-0 right-0">
+                                                <button type="button" class="-m-2 p-2 inline-flex text-gray-400 hover:text-red-500 transition-colors" @onclick="() => RemoveItem(item.Item.Id)">
+                                                    <span class="sr-only">Remove</span>
+                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 flex justify-between items-end">
+                                        <p class="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">In Stock</p>
+                                        <p class="text-lg font-bold text-gray-900">Total: $@item.SubTotal.ToString("N2")</p>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </section>
+
+                <!-- Order Summary -->
+                <section class="mt-16 bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5 sticky top-24">
+                    <h2 class="text-lg font-medium text-gray-900 mb-6">Order summary</h2>
+
+                    <dl class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <dt class="text-sm text-gray-600">Subtotal</dt>
+                            <dd class="text-sm font-medium text-gray-900">$@CartService.TotalPrice().ToString("N2")</dd>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                            <dt class="flex items-center text-sm text-gray-600">
+                                <span>Shipping estimate</span>
+                                <a href="#" class="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                                    <span class="sr-only">Learn more about how shipping is calculated</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </dt>
+                            <dd class="text-sm font-medium text-gray-900">$0.00</dd>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                            <dt class="flex text-sm text-gray-600">
+                                <span>Tax estimate</span>
+                                <a href="#" class="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                                    <span class="sr-only">Learn more about how tax is calculated</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </dt>
+                            <dd class="text-sm font-medium text-gray-900">$0.00</dd>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                            <dt class="text-base font-medium text-gray-900">Order total</dt>
+                            <dd class="text-base font-medium text-gray-900">$@CartService.TotalPrice().ToString("N2")</dd>
+                        </div>
+                    </dl>
+
+                    <div class="mt-8">
+                        <button class="w-full bg-indigo-600 border border-transparent rounded-full shadow-sm py-4 px-4 text-base font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg transition-transform hover:scale-[1.02]" @onclick="ProceedToCheckout">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </section>
+            </div>
+        }
+    </div>
+</div>
 
 @code {
     protected override void OnInitialized()

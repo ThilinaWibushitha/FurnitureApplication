@@ -1,0 +1,237 @@
+@page "/product/{Id:long}"
+@using Furniture.ClientPortal.Models
+@using Furniture.ClientPortal.Services
+@inject IItemService ItemService
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(item?.Name ?? "Product Details") | Furniture</PageTitle>
+
+<div class="bg-white min-h-screen">
+    @if (isLoading)
+    {
+        <div class="flex flex-col justify-center items-center h-screen space-y-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+            <p class="text-gray-500 font-medium">Loading product details...</p>
+        </div>
+    }
+    else if (errorMessage != null)
+    {
+        <div class="max-w-2xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">Product not found</h3>
+            <p class="mt-2 text-sm text-gray-500">@errorMessage</p>
+            <div class="mt-6">
+                <a href="all-furniture" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+                    Back to Shop
+                </a>
+            </div>
+        </div>
+    }
+    else if (item != null)
+    {
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex mb-8" aria-label="Breadcrumb">
+                <ol role="list" class="flex items-center space-x-4">
+                    <li>
+                        <div>
+                            <a href="/" class="text-gray-400 hover:text-gray-500">
+                                <svg class="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                </svg>
+                                <span class="sr-only">Home</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                            </svg>
+                            <a href="all-furniture" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Shop</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                            </svg>
+                            <span class="ml-4 text-sm font-medium text-gray-500" aria-current="page">@item.Name</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+                <!-- Image Gallery -->
+                <div class="flex flex-col-reverse">
+                    <div class="w-full aspect-w-1 aspect-h-1 bg-gray-100 rounded-3xl overflow-hidden shadow-sm">
+                         @if (!string.IsNullOrEmpty(item.MainImageUrl))
+                        {
+                            <img src="@item.MainImageUrl" alt="@item.Name" class="w-full h-full object-center object-cover hover:scale-105 transition-transform duration-500">
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                <span class="text-6xl">📷</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+                    @if (item.DefaultDiscountPercent > 0)
+                    {
+                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 mb-4">
+                            Save @item.DefaultDiscountPercent%
+                        </span>
+                    }
+                    
+                    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 mb-2">@item.Name</h1>
+                    <p class="text-sm text-gray-500 mb-6">SKU: @item.Sku</p>
+
+                    <div class="mt-3">
+                        <h2 class="sr-only">Product information</h2>
+                        <div class="flex items-baseline">
+                             <p class="text-4xl font-playwrite font-bold text-gray-900">$@item.BasePrice.ToString("N2")</p>
+                             @if (item.DefaultDiscountPercent > 0)
+                            {
+                                 var originalPrice = item.BasePrice / (1 - item.DefaultDiscountPercent / 100);
+                                <p class="ml-4 text-lg text-gray-500 line-through">$@originalPrice.ToString("N2")</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="sr-only">Description</h3>
+                        <div class="text-base text-gray-700 leading-relaxed space-y-4">
+                            <p>@item.Description</p>
+                            <p>
+                                Experience the perfect blend of style and comfort. This piece is crafted with attention to detail, 
+                                ensuring it stands out in any room while providing the functionality you need.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border-t border-gray-100 pt-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center border border-gray-300 rounded-md">
+                                <button @onclick="DecreaseQuantity" class="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-md transition-colors" disabled="@(quantity <= 1)">-</button>
+                                <span class="px-4 py-2 text-gray-900 border-l border-r border-gray-300 min-w-[3rem] text-center">@quantity</span>
+                                <button @onclick="IncreaseQuantity" class="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-md transition-colors">+</button>
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                @if (item.IsPublishedOnline)
+                                {
+                                    <span class="text-green-600 font-medium flex items-center">
+                                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                        In Stock
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-red-500 font-medium">Out of Stock</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <button @onclick="AddToCart" class="w-full bg-indigo-600 border border-transparent rounded-full py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                                Add to Cart
+                            </button>
+                             <button class="w-full bg-white border border-gray-300 rounded-full py-3 px-8 flex items-center justify-center text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                                Add to Wishlist
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <section aria-labelledby="features-heading" class="mt-12">
+                        <h2 id="features-heading" class="sr-only">Features</h2>
+                        <dl class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
+                            <div class="border-t border-gray-200 pt-4">
+                                <dt class="font-medium text-gray-900">Materials</dt>
+                                <dd class="mt-2 text-sm text-gray-500">Premium sustainable wood and fabric.</dd>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4">
+                                <dt class="font-medium text-gray-900">Delivery</dt>
+                                <dd class="mt-2 text-sm text-gray-500">Free standard shipping on all orders.</dd>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4">
+                                <dt class="font-medium text-gray-900">Warranty</dt>
+                                <dd class="mt-2 text-sm text-gray-500">2-year extensive warranty included.</dd>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4">
+                                <dt class="font-medium text-gray-900">Returns</dt>
+                                <dd class="mt-2 text-sm text-gray-500">30-day return policy for peace of mind.</dd>
+                            </div>
+                        </dl>
+                    </section>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private Item? item;
+    private bool isLoading = true;
+    private string? errorMessage;
+    private int quantity = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            item = await ItemService.GetItemAsync(Id);
+            
+            if (item == null)
+            {
+                errorMessage = "The item you are looking for does not exist.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Unable to load product details.";
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void IncreaseQuantity()
+    {
+        quantity++;
+    }
+
+    private void DecreaseQuantity()
+    {
+        if (quantity > 1)
+        {
+            quantity--;
+        }
+    }
+
+    private void AddToCart()
+    {
+        if (item != null)
+        {
+            CartService.AddToCart(item, quantity);
+            // Optional: Show a toast or navigate to cart
+            NavigationManager.NavigateTo("cart");
+        }
+    }
+}

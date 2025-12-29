@@ -66,12 +66,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9yZ290UGFzc3dvcmQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/FurnitureDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRnVybml0dXJlRGV0YWlsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/Items/ItemEdit.razor]
@@ -92,6 +92,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Pages/TrendingFurniture.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJlbmRpbmdGdXJuaXR1cmUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Shared/ClientNavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENsaWVudE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Thilina Wibushitha/Desktop/FurnitureApp/Furniture.ClientPortal/Shared/MainLayout.razor]

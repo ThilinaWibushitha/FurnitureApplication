@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f915c8a9c7ad3a136882abbcc87e57b25a702267")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9ad05e9426eb8edb05029408cb871d99d987bb91")]
 [assembly: System.Reflection.AssemblyProductAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Furniture.Clientportal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

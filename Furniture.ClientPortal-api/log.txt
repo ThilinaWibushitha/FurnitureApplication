@@ -1,0 +1,2 @@
+[90m2025-12-28T22:22:52+05:30[0m [32mINF[0m [1mStarting server[0m [36mport=[0m8080
+[90m2025-12-28T22:22:52+05:30[0m [31mFTL[0m [1mServer error[0m [36merror=[0m[31m[1m"listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."[0m[0m
